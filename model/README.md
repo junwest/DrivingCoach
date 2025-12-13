@@ -1,23 +1,22 @@
-# 🤖 DrivingCoach AI 모델 (Python)
+# 🤖 DrivingCoach AI Server
 
-> YOLO, U-Net, CNN 기반 운전 상황 분석 엔진
+> Flask API 서버로 AI 모델을 서빙하고 ngrok로 외부 접근 제공
 
 ## 📋 개요
 
-이 모듈은 블랙박스 영상을 분석하여 위험 운전 행동을 자동으로 감지하는 AI 파이프라인입니다.
+DrivingCoach AI 모델을 REST API로 제공하는 서버입니다. 모바일 앱에서 이미지, 오디오를 전송하면 AI 분석 결과를 반환합니다.
 
 **주요 기능**:
-- 🎥 **YOLO**: 보행자, 차량, 표지판 인식
-- 🛣️ **U-Net**: 차선 감지 및 변경 추적
-- 🔊 **AudioCNN**: 경적, 깜박이, 와이퍼 소리 분류
-- ⚠️ **시나리오 엔진**: 11가지 위험 운전 감지
+- 🎥 **이미지 분석**: YOLO 객체 인식 + 차선 감지
+- 🔊 **음성 분석**: 경적, 깜박이, 와이퍼 소리 분류
+- ⚠️ **시나리오 판별**: 위험 운전 상황 감지
+- 🌐 **ngrok 통합**: 외부에서 접근 가능한 Public URL 자동 생성
 
 ## ⚡ 빠른 시작
 
 ### 필수 요구사항
-- **Python 3.8 이상**
-- **PyTorch 1.10+**
-- **(선택) CUDA** (GPU 가속)
+- **Python 3.8+**
+- **ngrok** 계정 및 설치 (https://ngrok.com)
 
 ### 설치
 
@@ -35,309 +34,369 @@ venv\Scripts\activate
 
 #### 2️⃣ 의존성 설치
 ```bash
-pip install torch torchvision ultralytics librosa opencv-python numpy
-```
-
-또는 `requirements.txt` 사용:
-```bash
 pip install -r requirements.txt
 ```
 
-#### 3️⃣ 모델 파일 확인
+#### 3️⃣ ngrok 설치 및 인증
+```bash
+# Mac (Homebrew)
+brew install ngrok
+
+# Windows/Linux
+# https://ngrok.com/download 에서 다운로드
+
+# ngrok 인증 (무료 계정 생성 후)
+ngrok authtoken YOUR_AUTH_TOKEN
+```
+
+#### 4️⃣ 모델 파일 확인
 `models/` 폴더에 다음 파일이 있어야 합니다:
-- `YOLO.pt` (객체 인식 모델)
-- `lane_detect.pt` (차선 인식 모델)
-- `AudioCNN.pt` (음성 분류 모델)
+- `YOLO.pt`
+- `lane_detect.pt`
+- `AudioCNN.pt`
 
-### 실행
+### 서버 실행
 
-#### 기본 실행 (전체 이벤트)
+#### 방법 1: ngrok 자동 실행 (권장)
 ```bash
-python src/main.py
+python start_server.py
 ```
 
-#### 특정 비디오 분석
-```bash
-python src/main.py --videos Data/이벤트\ 4.mp4 Data/이벤트\ 5.mp4
+출력 예시:
+```
+============================================================
+🚗 DrivingCoach AI Server with ngrok
+============================================================
+
+1️⃣ Starting Flask server...
+2️⃣ Starting ngrok tunnel...
+
+✅ Server is running!
+============================================================
+📍 Local URL:  http://localhost:5000
+🌐 Public URL: https://abc123.ngrok.io
+============================================================
+
+📱 Use the Public URL in your mobile app!
+
+API Endpoints:
+  GET  https://abc123.ngrok.io/
+  POST https://abc123.ngrok.io/api/analyze/image
+  POST https://abc123.ngrok.io/api/analyze/audio
+  POST https://abc123.ngrok.io/api/analyze/scenario
 ```
 
-#### CPU 모드 (GPU 없을 때)
+#### 방법 2: Flask만 실행 (로컬 테스트)
 ```bash
-python src/main.py --device cpu
+python src/server.py
 ```
 
-## 📁 프로젝트 구조
+## 🗂️ 프로젝트 구조
 
 ```
 model/
-├── src/                        # 소스 코드
-│   ├── main.py                # 메인 실행 파일 ⭐
+├── src/
+│   ├── server.py              # Flask API 서버 ⭐
 │   ├── AudioCNN.py            # 음성 분석 모델
 │   ├── lane_detect.py         # 차선 인식 모델
-│   ├── yolo.py                # YOLO 래퍼
-│   ├── algorithm_yolo.py      # YOLO 알고리즘 (참고용)
-│   └── algorithm_lane.py      # 차선 알고리즘 (참고용)
+│   └── yolo.py                # YOLO 래퍼
 │
-├── models/                     # 학습된 모델 가중치
+├── models/                    # 학습된 모델 가중치
 │   ├── YOLO.pt
 │   ├── lane_detect.pt
 │   └── AudioCNN.pt
 │
-├── Data/                       # 입력 비디오
-│   ├── 이벤트 4.mp4
-│   ├── 이벤트 5.mp4
-│   ├── 이벤트 7.mp4
-│   ├── 이벤트 8.mp4
-│   ├── 이벤트 9.mp4
-│   ├── 이벤트 10.mp4
-│   └── 이벤트 11.mp4
-│
-├── Outputs/                    # 분석 결과 비디오
-│   ├── 이벤트 4_annotated.mp4
-│   └── ...
-│
-└── find_lane/                  # 차선 감지 실험 코드
+├── Data/                      # (선택) 테스트용 비디오
+├── start_server.py            # ngrok 자동 실행 스크립트 ⭐
+└── requirements.txt           # Python 의존성
 ```
 
-## 🎯 감지 시나리오
+## 📡 API 엔드포인트
 
-| ID | 시나리오 | 감지 로직 |
-|---|---|---|
-| **4** | 차선 변경 후 깜박이 미해제 | 차선 변경 + 방향지시등 2초 이상 유지 |
-| **5** | 깜박이 없이 차선 변경 | 차선 변경 감지 + 방향지시등 미작동 |
-| **7** | 악천후 전조등 권장 | 와이퍼 + 비상등 동시 감지 |
-| **8** | 우회전 보행자 구간 경적 | 횡단보도 표지판 + 경적 (보행자 없음) |
-| **9** | 보행자 위협 운전 | 보행자 감지 + 경적 |
-| **10** | 급정거 위협 운전 | 급정거 감지 + 경적 |
-| **11** | 비상등 남용 | 와이퍼+비상등 반복 (3청크 이내) |
-
-## 🔧 주요 파라미터
-
-### main.py 실행 옵션
-
-```bash
-python src/main.py \
-  --videos Data/이벤트\ 4.mp4 \
-  --output-dir Outputs \
-  --device cuda \
-  --chunk-seconds 2.0 \
-  --audio-threshold 0.7 \
-  --lane-change-threshold 40.0
+### 1. Health Check
+```http
+GET /
 ```
 
-| 파라미터 | 설명 | 기본값 |
-|---|---|---|
-| `--videos` | 분석할 비디오 경로 | 전체 이벤트 |
-| `--output-dir` | 결과 저장 경로 | `Outputs/` |
-| `--device` | 디바이스 (cuda/cpu) | cuda (가능 시) |
-| `--chunk-seconds` | 청크 길이 (초) | 2.0 |
-| `--sampled-frames` | 청크당 샘플링 프레임 수 | 20 |
-| `--audio-threshold` | 음성 감지 임계값 | 0.7 |
-| `--lane-change-threshold` | 차선 변경 임계값 (픽셀) | 40.0 |
-| `--yolo-conf` | YOLO 신뢰도 임계값 | 0.2 |
-
-## 📊 분석 프로세스
-
-### 1. 비디오 청크 분할
-- 2초 단위로 영상 분할
-- 각 청크마다 독립적으로 분석
-
-### 2. 객체 인식 (YOLO)
-```python
-results = yolo.track(frames, persist=True, conf=0.2)
-# 보행자, 차량, 표지판 감지
-```
-
-### 3. 차선 감지 (U-Net)
-```python
-lane_change, offset = lane_monitor.process(frame)
-# 차선 중심 추적 및 변경 감지
-```
-
-### 4. 음성 분석 (AudioCNN)
-```python
-audio_label, score = audio_detector.predict(audio_chunk)
-# horn, blinker, wiper 분류
-```
-
-### 5. 시나리오 판별
-```python
-scenario_id, message = scenario_evaluator.evaluate(features)
-# 종합 분석 후 시나리오 ID 반환
-```
-
-### 6. 결과 오버레이
-- 감지된 객체 바운딩 박스
-- 시나리오 메시지 텍스트
-- 차선 변경 상태
-- 오디오 분류 결과
-
-## 🧪 테스트 실행
-
-### 단일 이벤트 테스트
-```bash
-# 이벤트 4: 차선 변경 후 깜박이 미해제
-python src/main.py --videos Data/이벤트\ 4.mp4
-
-# 결과: Outputs/이벤트 4_annotated.mp4
-```
-
-### 전체 이벤트 일괄 처리
-```bash
-python src/main.py
-# 7개 이벤트 모두 분석
-```
-
-### 디버그 모드
-```python
-# main.py 실행 중 출력 예시
-Chunk 01: event=0 '정상 운행' | horn=False ped=False stop=False
-Chunk 02: event=5 '방향지시등 없이 차선을 변경했습니다.' | horn=False ped=False stop=False
-```
-
-## 📈 성능 최적화
-
-### GPU 가속 (권장)
-```bash
-# CUDA 사용 가능 확인
-python -c "import torch; print(torch.cuda.is_available())"
-
-# GPU 메모리 사용량 확인
-nvidia-smi
-```
-
-### 배치 처리
-- YOLO tracking: `batch_size` 조정 가능
-- 청크당 프레임 수 줄이기: `--sampled-frames 10`
-
-### 메모리 관리
-```python
-# 대용량 비디오 처리 시
-# chunk-seconds를 작게 설정 (1.0초)
-python src/main.py --chunk-seconds 1.0
-```
-
-## 🔍 출력 결과 분석
-
-### 콘솔 출력
-```
-🎥 분석 시작: 이벤트 4.mp4
-Chunk 01: event=0 '정상 운행' | horn=False ped=False stop=False lane_change=False
-Chunk 05: event=4 '차선 변경 후 방향지시등을 끄지 않았습니다.' | horn=False ped=False stop=False lane_change=True
-✅ 결과 저장: Outputs/이벤트 4_annotated.mp4
-```
-
-### 저장된 비디오
-- 원본 프레임에 분석 결과 오버레이
-- 빨간색 텍스트: 위험 시나리오 감지
-- 초록색 텍스트: 정상 운행
-- 바운딩 박스:
-  - 🟢 초록: 일반 객체
-  - 🔴 빨강: 보행자
-  - 🟣 보라: 기타 객체
-
-## ⚠️ 문제 해결
-
-### 1. CUDA 오류
-```bash
-# CPU 모드로 전환
-python src/main.py --device cpu
-```
-
-### 2. 모델 파일 없음
-```
-FileNotFoundError: models/YOLO.pt not found
-```
-**해결**: `models/` 폴더에 `.pt` 파일 배치 필요
-
-### 3. 메모리 부족
-```bash
-# 청크 크기 줄이기
-python src/main.py --chunk-seconds 1.0 --sampled-frames 10
-```
-
-### 4. 비디오 코덱 오류
-```bash
-# OpenCV 재설치
-pip uninstall opencv-python
-pip install opencv-python-headless
-```
-
-### 5. librosa 설치 오류 (Mac M1/M2)
-```bash
-# Conda 사용 권장
-conda install -c conda-forge librosa
-```
-
-## 🚀 고급 사용법
-
-### 커스텀 시나리오 추가
-`src/main.py`의 `SCENARIO_MESSAGES` 딕셔너리 수정:
-```python
-SCENARIO_MESSAGES = {
-    4: "차선 변경 후 방향지시등을 끄지 않았습니다.",
-    5: "방향지시등 없이 차선을 변경했습니다.",
-    # ... 기존 시나리오
-    12: "새로운 시나리오",  # 추가
+**응답**:
+```json
+{
+  "service": "DrivingCoach AI Server",
+  "status": "running",
+  "device": "cuda",
+  "models": {
+    "yolo": true,
+    "lane": true,
+    "audio": true
+  }
 }
 ```
 
-### ROI (관심 영역) 조정
-깜박이 감지 영역 변경:
-```bash
-python src/main.py \
-  --left-signal-roi 170 390 25 25 \
-  --right-signal-roi 240 390 25 25
+### 2. 이미지 분석 (객체 인식 + 차선 감지)
+```http
+POST /api/analyze/image
+Content-Type: application/json
+
+{
+  "image": "base64_encoded_image"
+}
 ```
 
-### 차선 감지 민감도 조절
-```bash
-# 더 민감하게 (작은 변화도 감지)
-python src/main.py --lane-change-threshold 20.0
-
-# 덜 민감하게 (큰 변화만 감지)
-python src/main.py --lane-change-threshold 60.0
+**응답**:
+```json
+{
+  "success": true,
+  "results": {
+    "objects": [
+      {
+        "class": "pedestrian",
+        "confidence": 0.94,
+        "bbox": [120, 200, 180, 350]
+      }
+    ],
+    "lane": {
+      "detected": true,
+      "center": 128.5,
+      "offset": 2.5
+    }
+  }
+}
 ```
 
-## 📦 의존성 상세
+### 3. 음성 분석
+```http
+POST /api/analyze/audio
+Content-Type: application/json
+
+{
+  "audio": "base64_encoded_wav",
+  "sample_rate": 16000
+}
+```
+
+**응답**:
+```json
+{
+  "success": true,
+  "results": {
+    "label": "horn",
+    "confidence": 0.87,
+    "all_predictions": {
+      "horn": 0.87,
+      "blinker": 0.08,
+      "wiper": 0.05
+    }
+  }
+}
+```
+
+### 4. 시나리오 판별
+```http
+POST /api/analyze/scenario
+Content-Type: application/json
+
+{
+  "features": {
+    "horn": true,
+    "pedestrian": true,
+    "lane_change": false,
+    "blinker": false
+  }
+}
+```
+
+**응답**:
+```json
+{
+  "success": true,
+  "scenario": {
+    "id": 9,
+    "message": "보행자 근처에서 경적이 울렸습니다."
+  }
+}
+```
+
+## 🧪 API 테스트
+
+### cURL 테스트
+```bash
+# Health check
+curl http://localhost:5000/
+
+# 이미지 분석 (base64 인코딩 필요)
+curl -X POST http://localhost:5000/api/analyze/image \
+  -H "Content-Type: application/json" \
+  -d '{"image": "YOUR_BASE64_IMAGE"}'
+```
+
+### Python 테스트
+```python
+import requests
+import base64
+
+# 이미지 인코딩
+with open("test.jpg", "rb") as f:
+    img_base64 = base64.b64encode(f.read()).decode()
+
+# API 호출
+response = requests.post(
+    "http://localhost:5000/api/analyze/image",
+    json={"image": img_base64}
+)
+
+print(response.json())
+```
+
+## 🌐 ngrok 사용법
+
+### ngrok Public URL
+- 서버를 시작하면 **Public URL**이 자동 생성됩니다
+- 이 URL을 모바일 앱의 API 설정에 입력하세요
+- 예: `https://abc123.ngrok.io`
+
+### ngrok Dashboard
+- http://localhost:4040 접속
+- 실시간 요청/응답 모니터링 가능
+
+### ngrok 무료 제한
+- URL은 서버 재시작 시 매번 변경됨
+- 유료 플랜 사용 시 고정 도메인 가능
+
+## ⚙️ 설정
+
+### GPU 사용
+```bash
+# CUDA 사용 가능 확인
+python -c "import torch; print(torch.cuda.is_available())"
+```
+
+서버가 자동으로 GPU를 감지하여 사용합니다.
+
+### 포트 변경
+`src/server.py` 마지막 줄 수정:
+```python
+app.run(host='0.0.0.0', port=8080, debug=False)
+```
+
+ngrok 명령도 변경:
+```bash
+ngrok http 8080
+```
+
+## ⚠️ 문제 해결
+
+### 1. ngrok 실행 오류
+```
+ERROR: authentication failed
+```
+**해결**:
+```bash
+ngrok authtoken YOUR_AUTH_TOKEN
+```
+
+### 2. 포트 충돌
+```
+OSError: [Errno 48] Address already in use
+```
+**해결**: 다른 포트 사용 또는 기존 프로세스 종료
+
+### 3. 모델 로드 실패
+```
+FileNotFoundError: models/YOLO.pt not found
+```
+**해결**: `models/` 폴더에 `.pt` 파일 배치
+
+### 4. CUDA 메모리 부족
+```bash
+# CPU 모드로 전환 (server.py 수정)
+device = torch.device("cpu")
+```
+
+### 5. CORS 오류
+Flask-CORS가 자동으로 처리합니다. 문제 발생 시:
+```bash
+pip install --upgrade flask-cors
+```
+
+## 📱 모바일 앱 연동
+
+### React Native에서 사용
+```javascript
+// API 설정
+const API_BASE_URL = 'https://abc123.ngrok.io';
+
+// 이미지 분석
+const analyzeImage = async (imageBase64) => {
+  const response = await fetch(`${API_BASE_URL}/api/analyze/image`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ image: imageBase64 }),
+  });
+  return await response.json();
+};
+
+// 음성 분석
+const analyzeAudio = async (audioBase64, sampleRate) => {
+  const response = await fetch(`${API_BASE_URL}/api/analyze/audio`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+      audio: audioBase64,
+      sample_rate: sampleRate 
+    }),
+  });
+  return await response.json();
+};
+```
+
+## 🚀 배포
+
+### 로컬 개발
+```bash
+python start_server.py
+```
+
+### 클라우드 배포 (선택)
+- **Heroku**: `Procfile` 추가
+- **AWS EC2**: 인스턴스에서 직접 실행
+- **Docker**: Dockerfile 생성
+
+## 📊 성능
+
+### 예상 응답 시간
+- **이미지 분석** (GPU): ~200ms
+- **이미지 분석** (CPU): ~1-2초
+- **음성 분석** (GPU): ~100ms
+- **음성 분석** (CPU): ~500ms
+- **시나리오 판별**: ~10ms
+
+### 동시 요청
+- Flask는 기본적으로 단일 스레드
+- 프로덕션 환경에서는 Gunicorn 사용 권장
+
+## 📦 의존성
 
 ```txt
-torch>=1.10.0
-torchvision>=0.11.0
-ultralytics>=8.0.0  # YOLO
-librosa>=0.9.0      # 음성 분석
-opencv-python>=4.5.0
-numpy>=1.21.0
+flask               # Web framework
+flask-cors          # CORS support
+torch               # PyTorch
+ultralytics         # YOLO
+librosa             # Audio processing
+opencv-python       # Image processing
+Pillow              # Image handling
+pyngrok             # ngrok integration
+requests            # HTTP client
 ```
-
-## 🎓 교수님/평가자를 위한 가이드
-
-### 빠른 데모
-```bash
-# 1. 가상환경 활성화
-source venv/bin/activate  # 또는 venv\Scripts\activate
-
-# 2. 단일 이벤트 실행
-python src/main.py --videos Data/이벤트\ 4.mp4 --device cpu
-
-# 3. 결과 확인
-# Outputs/이벤트 4_annotated.mp4 재생
-```
-
-### 예상 실행 시간
-- **CPU 모드**: 이벤트 1개당 ~5-10분
-- **GPU 모드**: 이벤트 1개당 ~1-2분
-
-### 결과 해석
-- **빨간색 메시지**: 위험 운전 감지
-- **청크 번호**: 2초 단위 구간
-- **Audio 텍스트**: 감지된 소리 종류
 
 ## 🔗 참고 자료
 
-- [Ultralytics YOLO](https://docs.ultralytics.com/)
-- [PyTorch 공식 문서](https://pytorch.org/docs/)
-- [librosa 가이드](https://librosa.org/doc/latest/)
+- [Flask 공식 문서](https://flask.palletsprojects.com/)
+- [ngrok 가이드](https://ngrok.com/docs)
+- [REST API 설계](https://restfulapi.net/)
 
 ---
 

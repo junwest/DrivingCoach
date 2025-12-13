@@ -1,0 +1,11 @@
+flask
+flask-cors
+torch
+torchvision
+ultralytics
+librosa
+opencv-python
+numpy
+Pillow
+pyngrok
+requests
