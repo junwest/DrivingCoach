@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Spring Boot Backend
+  backend:
+    build: ./dev
+    container_name: drivingcoach-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - drivingcoach-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # FastAPI AI Server
+  ai-server:
+    build: ./model
+    container_name: drivingcoach-ai
+    ports:
+      - "5000:5000"
+    networks:
+      - drivingcoach-network
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import requests; requests.get('http://localhost:5000/')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # 모델 파일 볼륨 마운트 (선택사항)
+    # volumes:
+    #   - ./model/models:/app/models
+
+networks:
+  drivingcoach-network:
+    driver: bridge

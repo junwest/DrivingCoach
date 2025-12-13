@@ -24,12 +24,21 @@ DrivingCoach/
 
 ## 🚀 빠른 시작 가이드
 
-### 필수 요구사항
-- **AI 모델**: Python 3.8+, PyTorch, CUDA (선택)
-- **백엔드**: Java 17, Gradle
-- **프론트엔드**: Node.js 16+, Expo CLI
+### 🐳 가장 쉬운 방법: Docker (권장)
 
-### 설치 순서
+**비전공자도 5분 안에 실행!**
+
+1. [Docker Desktop](https://www.docker.com/products/docker-desktop) 설치
+2. 프로젝트 다운로드
+3. **Windows**: `run_all.bat` 더블클릭 | **Mac**: `./run_all.sh` 실행
+
+그게 전부입니다! ✨
+
+상세 가이드: [**DOCKER_GUIDE.md**](DOCKER_GUIDE.md)
+
+---
+
+### 📚 수동 설치 (고급 사용자)
 
 #### 1️⃣ AI 모델 실행
 ```bash
