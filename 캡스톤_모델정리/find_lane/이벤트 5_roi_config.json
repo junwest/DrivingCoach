@@ -1,0 +1,22 @@
+{
+  "video_name": "\uc774\ubca4\ud2b8 5",
+  "roi_points": [
+    [
+      384.0,
+      293.0
+    ],
+    [
+      510.0,
+      293.0
+    ],
+    [
+      757.0,
+      332.0
+    ],
+    [
+      216.0,
+      333.0
+    ]
+  ],
+  "description": "ROI points: top-left, top-right, bottom-right, bottom-left"
+}
