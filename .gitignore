@@ -219,3 +219,11 @@ temp/
 
 # Docker
 docker-compose.override.yml
+
+# ngrok 로그 파일
+ngrok-*.log
+
+# 임시 데모 파일
+proxy-server.js
+debug-config.html
+vercel.json
