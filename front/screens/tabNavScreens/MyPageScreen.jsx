@@ -9,7 +9,7 @@ import { useAuth } from "../../auth/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker"; // 날짜 선택용
 
-const SERVER_BASE = "http://15.165.244.204:8080";
+const SERVER_BASE = "https://drivingcoach-production.up.railway.app";
 const BLUE = "#2357EB";
 const RED = "#DC2626";
 
@@ -45,7 +45,7 @@ const api = async (path, method = "GET", body = null) => {
 const fmtDate = (d) => {
   if (!d) return "";
   const date = new Date(d);
-  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 };
 
 export default function MyPageScreen() {
@@ -86,11 +86,11 @@ export default function MyPageScreen() {
     if (!passwordInput) return Alert.alert("알림", "비밀번호를 입력해주세요.");
 
     const res = await api("/api/mypage/passwordCheck", "POST", { password: passwordInput });
-    
+
     if (res && res.ok && res.data?.data?.check) {
       setPasswordInput("");
       setModalType(null); // 비번 확인창 닫고
-      
+
       // 다음 단계 진행
       if (nextAction === "updateInfo") {
         // 정보 수정 모달 열기 전 데이터 초기화
@@ -138,27 +138,27 @@ export default function MyPageScreen() {
     // MyPageController -> /api/mypage/passwordChange (ChangePasswordRequest: currentPassword, newPassword)
     // 따라서 currentPassword를 다시 입력받거나, 아까 입력한 값을 저장해둬야 합니다.
     // **보안상 비번 확인 단계에서 입력한 값을 잠시 가지고 있다가 보내는 방식으로 구현합니다.**
-    
+
     // (수정: handleCheckPassword에서 비번 확인용으로만 쓰고 초기화해버렸으니,
     // 변경 API 호출 시에는 '현재 비번'을 다시 입력받거나, 
     // 비번 변경 화면에서 '현재 비번', '새 비번', '새 비번 확인' 3개를 다 받는 게 정석입니다.)
-    
+
     // 여기서는 편의상 '비밀번호 변경' 모달에서 '현재 비번'도 같이 입력받도록 UI를 수정하겠습니다.
     // -> 아래 UI 코드 참고
   };
-  
+
   const requestChangePw = async (currentPw, newPw) => {
-      const res = await api("/api/mypage/passwordChange", "POST", {
-          currentPassword: currentPw,
-          newPassword: newPw
-      });
-      
-      if(res && res.ok) {
-          Alert.alert("성공", "비밀번호가 변경되었습니다. 다시 로그인해주세요.");
-          logout();
-      } else {
-          Alert.alert("실패", res?.data?.message || "변경 실패");
-      }
+    const res = await api("/api/mypage/passwordChange", "POST", {
+      currentPassword: currentPw,
+      newPassword: newPw
+    });
+
+    if (res && res.ok) {
+      Alert.alert("성공", "비밀번호가 변경되었습니다. 다시 로그인해주세요.");
+      logout();
+    } else {
+      Alert.alert("실패", res?.data?.message || "변경 실패");
+    }
   }
 
 
@@ -182,20 +182,20 @@ export default function MyPageScreen() {
 
   // --- 렌더링 헬퍼 ---
   const formatTime = (seconds) => {
-      if (!seconds) return "0분";
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      return h > 0 ? `${h}시간 ${m}분` : `${m}분`;
+    if (!seconds) return "0분";
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    return h > 0 ? `${h}시간 ${m}분` : `${m}분`;
   };
-  
+
   // --- [모달] 비밀번호 확인 ---
   const renderCheckPwModal = () => (
     <Modal transparent visible={modalType === 'checkPw'} animationType="fade">
-      <KeyboardAvoidingView behavior={Platform.OS==="ios"?"padding":undefined} style={styles.modalOverlay}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.modalOverlay}>
         <View style={styles.modalCard}>
           <Text style={styles.modalTitle}>비밀번호 확인</Text>
           <Text style={styles.modalSub}>안전한 정보 접근을 위해 비밀번호를 입력해주세요.</Text>
-          
+
           <TextInput
             style={styles.input}
             placeholder="비밀번호"
@@ -203,7 +203,7 @@ export default function MyPageScreen() {
             value={passwordInput}
             onChangeText={setPasswordInput}
           />
-          
+
           <View style={styles.modalBtns}>
             <TouchableOpacity style={styles.btnCancel} onPress={() => setModalType(null)}>
               <Text style={styles.btnTextGray}>취소</Text>
@@ -220,51 +220,51 @@ export default function MyPageScreen() {
   // --- [모달] 정보 수정 ---
   const renderUpdateInfoModal = () => (
     <Modal visible={modalType === 'updateInfo'} animationType="slide">
-      <SafeAreaView style={{flex:1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.fullModalHeader}>
-            <TouchableOpacity onPress={() => setModalType(null)}>
-                <Text style={styles.headerBtn}>취소</Text>
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>정보 수정</Text>
-            <TouchableOpacity onPress={handleUpdateInfo}>
-                <Text style={[styles.headerBtn, {color:BLUE}]}>저장</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalType(null)}>
+            <Text style={styles.headerBtn}>취소</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>정보 수정</Text>
+          <TouchableOpacity onPress={handleUpdateInfo}>
+            <Text style={[styles.headerBtn, { color: BLUE }]}>저장</Text>
+          </TouchableOpacity>
         </View>
-        
-        <ScrollView style={{padding:20}}>
-            <Text style={styles.label}>닉네임</Text>
-            <TextInput style={styles.input} value={editNickname} onChangeText={setEditNickname} />
-            
-            <Text style={[styles.label, {marginTop:20}]}>성별</Text>
-            <View style={styles.genderRow}>
-                <TouchableOpacity 
-                    style={[styles.genderBtn, editGender==="M" && styles.genderBtnActive]}
-                    onPress={()=>setEditGender("M")}>
-                    <Text style={[styles.genderText, editGender==="M" && {color:"white"}]}>남성</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                    style={[styles.genderBtn, editGender==="F" && styles.genderBtnActive]}
-                    onPress={()=>setEditGender("F")}>
-                    <Text style={[styles.genderText, editGender==="F" && {color:"white"}]}>여성</Text>
-                </TouchableOpacity>
-            </View>
 
-            <Text style={[styles.label, {marginTop:20}]}>생년월일</Text>
-            <TouchableOpacity style={styles.input} onPress={()=>setShowDatePicker(true)}>
-                <Text>{fmtDate(editBirth)}</Text>
+        <ScrollView style={{ padding: 20 }}>
+          <Text style={styles.label}>닉네임</Text>
+          <TextInput style={styles.input} value={editNickname} onChangeText={setEditNickname} />
+
+          <Text style={[styles.label, { marginTop: 20 }]}>성별</Text>
+          <View style={styles.genderRow}>
+            <TouchableOpacity
+              style={[styles.genderBtn, editGender === "M" && styles.genderBtnActive]}
+              onPress={() => setEditGender("M")}>
+              <Text style={[styles.genderText, editGender === "M" && { color: "white" }]}>남성</Text>
             </TouchableOpacity>
-            
-            {showDatePicker && (
-                <DateTimePicker
-                    value={editBirth}
-                    mode="date"
-                    display="spinner"
-                    onChange={(e, date) => {
-                        setShowDatePicker(false);
-                        if(date) setEditBirth(date);
-                    }}
-                />
-            )}
+            <TouchableOpacity
+              style={[styles.genderBtn, editGender === "F" && styles.genderBtnActive]}
+              onPress={() => setEditGender("F")}>
+              <Text style={[styles.genderText, editGender === "F" && { color: "white" }]}>여성</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={[styles.label, { marginTop: 20 }]}>생년월일</Text>
+          <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
+            <Text>{fmtDate(editBirth)}</Text>
+          </TouchableOpacity>
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={editBirth}
+              mode="date"
+              display="spinner"
+              onChange={(e, date) => {
+                setShowDatePicker(false);
+                if (date) setEditBirth(date);
+              }}
+            />
+          )}
         </ScrollView>
       </SafeAreaView>
     </Modal>
@@ -272,37 +272,37 @@ export default function MyPageScreen() {
 
   // --- [모달] 비밀번호 변경 (현재비번 + 새비번 입력) ---
   const [currPwForChange, setCurrPwForChange] = useState("");
-  
+
   const renderChangePwModal = () => (
     <Modal visible={modalType === 'changePw'} animationType="slide">
-      <SafeAreaView style={{flex:1}}>
-         <View style={styles.fullModalHeader}>
-            <TouchableOpacity onPress={() => setModalType(null)}>
-                <Text style={styles.headerBtn}>취소</Text>
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>비밀번호 변경</Text>
-            <View style={{width:40}}/> 
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.fullModalHeader}>
+          <TouchableOpacity onPress={() => setModalType(null)}>
+            <Text style={styles.headerBtn}>취소</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>비밀번호 변경</Text>
+          <View style={{ width: 40 }} />
         </View>
-        
-        <View style={{padding:20}}>
-            <Text style={styles.label}>현재 비밀번호</Text>
-            <TextInput style={styles.input} secureTextEntry value={currPwForChange} onChangeText={setCurrPwForChange} />
 
-            <Text style={[styles.label, {marginTop:20}]}>새 비밀번호</Text>
-            <TextInput style={styles.input} secureTextEntry value={newPassword} onChangeText={setNewPassword} placeholder="8자 이상 입력" />
+        <View style={{ padding: 20 }}>
+          <Text style={styles.label}>현재 비밀번호</Text>
+          <TextInput style={styles.input} secureTextEntry value={currPwForChange} onChangeText={setCurrPwForChange} />
 
-            <Text style={[styles.label, {marginTop:20}]}>새 비밀번호 확인</Text>
-            <TextInput style={styles.input} secureTextEntry value={newPassword2} onChangeText={setNewPassword2} />
-            
-            <TouchableOpacity 
-                style={[styles.confirmBtn, {marginTop:30}]}
-                onPress={() => {
-                    if (newPassword !== newPassword2) return Alert.alert("오류", "새 비밀번호가 일치하지 않습니다.");
-                    requestChangePw(currPwForChange, newPassword);
-                }}
-            >
-                <Text style={styles.btnTextWhite}>변경하기</Text>
-            </TouchableOpacity>
+          <Text style={[styles.label, { marginTop: 20 }]}>새 비밀번호</Text>
+          <TextInput style={styles.input} secureTextEntry value={newPassword} onChangeText={setNewPassword} placeholder="8자 이상 입력" />
+
+          <Text style={[styles.label, { marginTop: 20 }]}>새 비밀번호 확인</Text>
+          <TextInput style={styles.input} secureTextEntry value={newPassword2} onChangeText={setNewPassword2} />
+
+          <TouchableOpacity
+            style={[styles.confirmBtn, { marginTop: 30 }]}
+            onPress={() => {
+              if (newPassword !== newPassword2) return Alert.alert("오류", "새 비밀번호가 일치하지 않습니다.");
+              requestChangePw(currPwForChange, newPassword);
+            }}
+          >
+            <Text style={styles.btnTextWhite}>변경하기</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </Modal>
@@ -314,102 +314,102 @@ export default function MyPageScreen() {
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
       <View style={styles.container}>
         <PageHeaderD />
-        
+
         <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 80 }}>
           {!loading && profile ? (
             <>
-            {/* 프로필 카드 */}
-            <View style={styles.card}>
+              {/* 프로필 카드 */}
+              <View style={styles.card}>
                 <Text style={styles.cardTitle}>마이페이지</Text>
                 <View style={styles.profileBox}>
-                    <View style={styles.avatar} />
-                    <View>
-                        <Text style={styles.name}>{profile.nickname}</Text>
-                        <Text style={styles.subMuted}>@{profile.loginId}</Text>
-                    </View>
+                  <View style={styles.avatar} />
+                  <View>
+                    <Text style={styles.name}>{profile.nickname}</Text>
+                    <Text style={styles.subMuted}>@{profile.loginId}</Text>
+                  </View>
                 </View>
                 <View style={styles.statRow}>
-                    <View style={styles.statItem}>
-                        <Text style={styles.statMain}>{profile.totalDrivingCount}회</Text>
-                        <Text style={styles.subMuted}>총 주행</Text>
-                    </View>
-                    <View style={styles.dividerY} />
-                    <View style={styles.statItem}>
-                        <Text style={styles.statMain}>{formatTime(profile.totalDrivingTime)}</Text>
-                        <Text style={styles.subMuted}>누적 시간</Text>
-                    </View>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statMain}>{profile.totalDrivingCount}회</Text>
+                    <Text style={styles.subMuted}>총 주행</Text>
+                  </View>
+                  <View style={styles.dividerY} />
+                  <View style={styles.statItem}>
+                    <Text style={styles.statMain}>{formatTime(profile.totalDrivingTime)}</Text>
+                    <Text style={styles.subMuted}>누적 시간</Text>
+                  </View>
                 </View>
-            </View>
+              </View>
 
-            {/* 안전 점수 */}
-            <View style={styles.card}>
+              {/* 안전 점수 */}
+              <View style={styles.card}>
                 <Text style={styles.cardTitle}>안전 점수</Text>
                 <View style={styles.progressBar}>
-                     <View style={[styles.progressFill, { width: `${Math.min(profile.safeScore, 100)}%` }]} />
+                  <View style={[styles.progressFill, { width: `${Math.min(profile.safeScore, 100)}%` }]} />
                 </View>
-                <Text style={{textAlign:'right', marginTop:8, fontWeight:'bold'}}>{profile.safeScore}점</Text>
-            </View>
-            
-            {/* 회원 정보 */}
-            <View style={styles.card}>
+                <Text style={{ textAlign: 'right', marginTop: 8, fontWeight: 'bold' }}>{profile.safeScore}점</Text>
+              </View>
+
+              {/* 회원 정보 */}
+              <View style={styles.card}>
                 <Text style={styles.cardTitle}>회원 정보</Text>
                 <InfoRow label="성별" value={profile.gender === "MALE" ? "남성" : "여성"} />
                 <InfoRow label="생년월일" value={profile.birthDate} />
-                <InfoRow label="가입일" value={profile.createdAt?.slice(0,10)} />
-            </View>
+                <InfoRow label="가입일" value={profile.createdAt?.slice(0, 10)} />
+              </View>
 
-            {/* 계정 관리 */}
-             <View style={styles.card}>
-              <Text style={styles.cardTitle}>계정 관리</Text>
-              
-              <MenuButton text="회원정보 수정" onPress={() => {
+              {/* 계정 관리 */}
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>계정 관리</Text>
+
+                <MenuButton text="회원정보 수정" onPress={() => {
                   setNextAction("updateInfo");
                   setModalType("checkPw"); // 비번 확인 먼저
-              }} />
-              
-              <MenuButton text="비밀번호 변경" onPress={() => {
-                   setCurrPwForChange(""); setNewPassword(""); setNewPassword2("");
-                   setModalType("changePw"); // 비번 변경 모달 바로 열기 (안에서 현재 비번 입력받음)
-              }} />
-              
-              <MenuButton text="계정 삭제" color={RED} onPress={() => {
+                }} />
+
+                <MenuButton text="비밀번호 변경" onPress={() => {
+                  setCurrPwForChange(""); setNewPassword(""); setNewPassword2("");
+                  setModalType("changePw"); // 비번 변경 모달 바로 열기 (안에서 현재 비번 입력받음)
+                }} />
+
+                <MenuButton text="계정 삭제" color={RED} onPress={() => {
                   setNextAction("deleteAccount");
                   setModalType("checkPw"); // 비번 확인 먼저
-              }} />
-            </View>
+                }} />
+              </View>
 
-            <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
+              <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
                 <Text style={styles.logoutText}>로그아웃</Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
             </>
           ) : (
-              <ActivityIndicator size="large" style={{marginTop:50}} />
+            <ActivityIndicator size="large" style={{ marginTop: 50 }} />
           )}
         </ScrollView>
       </View>
-      
+
       {/* 모달들 */}
       {renderCheckPwModal()}
       {renderUpdateInfoModal()}
       {renderChangePwModal()}
-      
+
     </SafeAreaView>
   );
 }
 
 // --- 하위 컴포넌트 ---
-const InfoRow = ({label, value}) => (
-    <View style={{flexDirection:'row', justifyContent:'space-between', paddingVertical:12, borderBottomWidth:1, borderColor:'#F1F5F9'}}>
-        <Text style={{color:'#111827'}}>{label}</Text>
-        <Text style={{color:'#6B7280'}}>{value}</Text>
-    </View>
+const InfoRow = ({ label, value }) => (
+  <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 12, borderBottomWidth: 1, borderColor: '#F1F5F9' }}>
+    <Text style={{ color: '#111827' }}>{label}</Text>
+    <Text style={{ color: '#6B7280' }}>{value}</Text>
+  </View>
 );
 
-const MenuButton = ({text, color="#111827", onPress}) => (
-    <TouchableOpacity onPress={onPress} style={{flexDirection:'row', justifyContent:'space-between', paddingVertical:14, borderBottomWidth:1, borderColor:'#F1F5F9'}}>
-        <Text style={{color, fontSize:14}}>{text}</Text>
-        <Text style={{color:'#9CA3AF'}}>›</Text>
-    </TouchableOpacity>
+const MenuButton = ({ text, color = "#111827", onPress }) => (
+  <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 14, borderBottomWidth: 1, borderColor: '#F1F5F9' }}>
+    <Text style={{ color, fontSize: 14 }}>{text}</Text>
+    <Text style={{ color: '#9CA3AF' }}>›</Text>
+  </TouchableOpacity>
 );
 
 
@@ -417,44 +417,44 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F2F4F7" },
   card: { backgroundColor: "#FFF", borderRadius: 12, padding: 16, marginBottom: 14 },
   cardTitle: { fontSize: 16, fontWeight: "700", marginBottom: 12 },
-  
+
   profileBox: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
   avatar: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#E5E7EB', marginRight: 12 },
   name: { fontSize: 18, fontWeight: '600' },
   subMuted: { fontSize: 12, color: '#6B7280' },
-  
+
   statRow: { flexDirection: 'row', backgroundColor: '#F8FAFC', borderRadius: 8, padding: 10 },
   statItem: { flex: 1, alignItems: 'center' },
   statMain: { fontWeight: '700', fontSize: 16 },
   dividerY: { width: 1, backgroundColor: '#E5E7EB' },
-  
-  progressBar: { height: 10, backgroundColor: '#E5E7EB', borderRadius: 5, overflow:'hidden' },
+
+  progressBar: { height: 10, backgroundColor: '#E5E7EB', borderRadius: 5, overflow: 'hidden' },
   progressFill: { height: '100%', backgroundColor: '#10B981' },
-  
+
   logoutBtn: { backgroundColor: RED, padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 10 },
   logoutText: { color: 'white', fontWeight: '700' },
 
   // 모달 스타일
-  modalOverlay: { flex:1, backgroundColor:'rgba(0,0,0,0.5)', justifyContent:'center', padding:20 },
-  modalCard: { backgroundColor:'white', borderRadius:16, padding:24 },
-  modalTitle: { fontSize:18, fontWeight:'bold', marginBottom:8 },
-  modalSub: { color:'#666', marginBottom:16 },
-  input: { borderWidth:1, borderColor:'#E2E8F0', borderRadius:8, padding:12, fontSize:16 },
-  modalBtns: { flexDirection:'row', marginTop:20, gap:10 },
-  btnCancel: { flex:1, padding:12, backgroundColor:'#F1F5F9', borderRadius:8, alignItems:'center' },
-  btnConfirm: { flex:1, padding:12, backgroundColor: BLUE, borderRadius:8, alignItems:'center' },
-  btnTextGray: { color:'#333', fontWeight:'600' },
-  btnTextWhite: { color:'white', fontWeight:'600' },
-  
-  fullModalHeader: { flexDirection:'row', justifyContent:'space-between', alignItems:'center', padding:16, borderBottomWidth:1, borderColor:'#eee' },
-  headerTitle: { fontSize:18, fontWeight:'bold' },
-  headerBtn: { fontSize:16, color:'#666' },
-  label: { fontSize:14, fontWeight:'600', marginBottom:8, color:'#333' },
-  
-  genderRow: { flexDirection:'row', gap:10 },
-  genderBtn: { flex:1, padding:12, borderWidth:1, borderColor:'#eee', borderRadius:8, alignItems:'center' },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 20 },
+  modalCard: { backgroundColor: 'white', borderRadius: 16, padding: 24 },
+  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 8 },
+  modalSub: { color: '#666', marginBottom: 16 },
+  input: { borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 8, padding: 12, fontSize: 16 },
+  modalBtns: { flexDirection: 'row', marginTop: 20, gap: 10 },
+  btnCancel: { flex: 1, padding: 12, backgroundColor: '#F1F5F9', borderRadius: 8, alignItems: 'center' },
+  btnConfirm: { flex: 1, padding: 12, backgroundColor: BLUE, borderRadius: 8, alignItems: 'center' },
+  btnTextGray: { color: '#333', fontWeight: '600' },
+  btnTextWhite: { color: 'white', fontWeight: '600' },
+
+  fullModalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderColor: '#eee' },
+  headerTitle: { fontSize: 18, fontWeight: 'bold' },
+  headerBtn: { fontSize: 16, color: '#666' },
+  label: { fontSize: 14, fontWeight: '600', marginBottom: 8, color: '#333' },
+
+  genderRow: { flexDirection: 'row', gap: 10 },
+  genderBtn: { flex: 1, padding: 12, borderWidth: 1, borderColor: '#eee', borderRadius: 8, alignItems: 'center' },
   genderBtnActive: { backgroundColor: BLUE, borderColor: BLUE },
-  genderText: { fontSize:16, color:'#333' },
-  
-  confirmBtn: { backgroundColor: BLUE, padding:15, borderRadius:10, alignItems:'center' }
+  genderText: { fontSize: 16, color: '#333' },
+
+  confirmBtn: { backgroundColor: BLUE, padding: 15, borderRadius: 10, alignItems: 'center' }
 });

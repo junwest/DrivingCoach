@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Config Debug</title>
+</head>
+<body>
+    <h1>환경 변수 디버그</h1>
+    <pre id="output"></pre>
+    
+    <script type="module">
+        import API_CONFIG from './config.js';
+        
+        const output = document.getElementById('output');
+        output.textContent = JSON.stringify({
+            BACKEND_URL: API_CONFIG.BACKEND_URL,
+            AI_SERVER_URL: API_CONFIG.AI_SERVER_URL,
+            WEBSOCKET_URL: API_CONFIG.WEBSOCKET_URL,
+            ENV_VARS: {
+                REACT_APP_BACKEND_URL: typeof process !== 'undefined' ? process.env?.REACT_APP_BACKEND_URL : 'undefined',
+                REACT_APP_AI_SERVER_URL: typeof process !== 'undefined' ? process.env?.REACT_APP_AI_SERVER_URL : 'undefined'
+            }
+        }, null, 2);
+    </script>
+</body>
+</html>

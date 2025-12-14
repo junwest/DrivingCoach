@@ -6,7 +6,7 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-const SERVER_BASE = "http://15.165.244.204:8080";
+const SERVER_BASE = "https://drivingcoach-production.up.railway.app";
 const BLUE = "#2357EB";
 const R = 12;
 
@@ -31,8 +31,8 @@ export default function Signup({ onGoLogin }) {
     !d
       ? "년 - 월 - 일"
       : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-          d.getDate()
-        ).padStart(2, "0")}`;
+        d.getDate()
+      ).padStart(2, "0")}`;
 
   // 아이디 입력이 바뀌면 중복확인 다시 요구
   const onChangeLoginId = (v) => {
@@ -61,10 +61,10 @@ export default function Signup({ onGoLogin }) {
       });
 
       const raw = await res.clone().text();
-       console.log("중복확인 raw:", raw);
+      console.log("중복확인 raw:", raw);
 
       let json = null;
-      try { json = JSON.parse(raw); } catch {}
+      try { json = JSON.parse(raw); } catch { }
 
       // 백엔드 응답형을 방어적으로 해석
       const msg = json?.message || raw || "";
@@ -102,48 +102,48 @@ export default function Signup({ onGoLogin }) {
   };
 
   const submit = async () => {
-  if (!nickname.trim()) return Alert.alert("확인", "닉네임을 입력해 주세요.");
-  if (!birth) return Alert.alert("확인", "생년월일을 선택해 주세요.");
-  if (!validLoginId(loginId)) return Alert.alert("확인", "아이디 형식을 다시 확인해 주세요.");
-  if (idCheck !== "ok")
-    return Alert.alert("확인", "아이디 중복확인을 완료해 주세요.");
-  if (pw.length < 6) return Alert.alert("확인", "비밀번호는 6자 이상으로 설정해 주세요.");
-  if (pw !== pw2) return Alert.alert("확인", "비밀번호 확인이 일치하지 않습니다.");
+    if (!nickname.trim()) return Alert.alert("확인", "닉네임을 입력해 주세요.");
+    if (!birth) return Alert.alert("확인", "생년월일을 선택해 주세요.");
+    if (!validLoginId(loginId)) return Alert.alert("확인", "아이디 형식을 다시 확인해 주세요.");
+    if (idCheck !== "ok")
+      return Alert.alert("확인", "아이디 중복확인을 완료해 주세요.");
+    if (pw.length < 6) return Alert.alert("확인", "비밀번호는 6자 이상으로 설정해 주세요.");
+    if (pw !== pw2) return Alert.alert("확인", "비밀번호 확인이 일치하지 않습니다.");
 
-  const birthDate = fmt(birth); // ex: "2001-01-01"
-  const genderApi = gender === "M" ? "MALE" : "FEMALE";
+    const birthDate = fmt(birth); // ex: "2001-01-01"
+    const genderApi = gender === "M" ? "MALE" : "FEMALE";
 
-  try {
-    const res = await fetch(`${SERVER_BASE}/api/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        nickname,
-        gender: genderApi,
-        birthDate,
-        loginId,
-        password: pw,
-      }),
-    });
+    try {
+      const res = await fetch(`${SERVER_BASE}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          nickname,
+          gender: genderApi,
+          birthDate,
+          loginId,
+          password: pw,
+        }),
+      });
 
-    const raw = await res.clone().text();
-    console.log("회원가입 raw:", raw);
+      const raw = await res.clone().text();
+      console.log("회원가입 raw:", raw);
 
-    const json = await res.json();
+      const json = await res.json();
 
-    if (!res.ok || json?.code >= 400) {
-      Alert.alert("회원가입 실패", json?.message || "서버 오류가 발생했습니다.");
-      return;
+      if (!res.ok || json?.code >= 400) {
+        Alert.alert("회원가입 실패", json?.message || "서버 오류가 발생했습니다.");
+        return;
+      }
+
+      Alert.alert("회원가입 완료", "로그인 화면으로 이동합니다.", [
+        { text: "확인", onPress: () => onGoLogin?.() },
+      ]);
+    } catch (e) {
+      console.error(e);
+      Alert.alert("오류", "회원가입에 실패했습니다. 다시 시도해 주세요.");
     }
-
-    Alert.alert("회원가입 완료", "로그인 화면으로 이동합니다.", [
-      { text: "확인", onPress: () => onGoLogin?.() },
-    ]);
-  } catch (e) {
-    console.error(e);
-    Alert.alert("오류", "회원가입에 실패했습니다. 다시 시도해 주세요.");
-  }
-};
+  };
 
   return (
     <KeyboardAvoidingView
@@ -173,11 +173,11 @@ export default function Signup({ onGoLogin }) {
         {/* 성별 */}
         <Text style={[styles.label, { marginTop: 16 }]}>성별 <Text style={styles.required}>*</Text></Text>
         <View style={styles.segmentRow}>
-          <TouchableOpacity onPress={() => setGender("M")} style={[styles.segment, gender==="M" && styles.segmentActive]}>
-            <Text style={[styles.segmentText, gender==="M" && styles.segmentTextActive]}>남성</Text>
+          <TouchableOpacity onPress={() => setGender("M")} style={[styles.segment, gender === "M" && styles.segmentActive]}>
+            <Text style={[styles.segmentText, gender === "M" && styles.segmentTextActive]}>남성</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setGender("F")} style={[styles.segment, gender==="F" && styles.segmentActive]}>
-            <Text style={[styles.segmentText, gender==="F" && styles.segmentTextActive]}>여성</Text>
+          <TouchableOpacity onPress={() => setGender("F")} style={[styles.segment, gender === "F" && styles.segmentActive]}>
+            <Text style={[styles.segmentText, gender === "F" && styles.segmentTextActive]}>여성</Text>
           </TouchableOpacity>
         </View>
 

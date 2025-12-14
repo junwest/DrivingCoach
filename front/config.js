@@ -13,8 +13,8 @@
 const ENV_BACKEND = typeof process !== 'undefined' && process.env?.REACT_APP_BACKEND_URL;
 const ENV_AI_SERVER = typeof process !== 'undefined' && process.env?.REACT_APP_AI_SERVER_URL;
 
-// EC2 백엔드 서버 (항상 켜져있음)
-const API_HOST = 'http://15.165.244.204:8080';
+// Railway 백엔드 (HTTPS - ngrok 데모 완벽 작동!)
+const API_HOST = 'https://drivingcoach-production.up.railway.app';
 
 // 로컬 테스트용 (필요시 주석 해제)
 // const API_HOST = 'localhost';

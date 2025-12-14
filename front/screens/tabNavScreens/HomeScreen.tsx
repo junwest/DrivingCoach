@@ -24,7 +24,7 @@ import { RecordDetails } from '../../RecordScreenComponents/RecordDetail';
 
 // ------------------- 공통 설정 & 함수 -------------------
 
-const SERVER_BASE = 'http://15.165.244.204:8080';
+const SERVER_BASE = 'https://drivingcoach-production.up.railway.app';
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
@@ -246,8 +246,8 @@ const RecentRecords = ({ onRecordPress }: { onRecordPress: (id: string) => void 
 
           return (
             // ★ [수정] View 대신 TouchableOpacity 사용 & onPress 연결
-            <TouchableOpacity 
-              key={item.drivingId} 
+            <TouchableOpacity
+              key={item.drivingId}
               style={recordStyles.recordItem}
               onPress={() => onRecordPress(String(item.drivingId))} // ID를 문자열로 변환해 전달
             >
@@ -335,6 +335,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingTop: 20,
-    paddingBottom: 80, 
+    paddingBottom: 80,
   },
 });

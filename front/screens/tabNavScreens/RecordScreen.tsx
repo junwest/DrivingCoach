@@ -9,16 +9,16 @@ import { useIsFocused } from "@react-navigation/native";
 import { PageHeaderD } from "../../RecordScreenComponents/pageHeaderD";
 import { RecordDetails } from "../../RecordScreenComponents/RecordDetail";
 
-const SERVER_BASE = "http://15.165.244.204:8080";
+const SERVER_BASE = "https://drivingcoach-production.up.railway.app";
 
 // --- 타입 정의 ---
 interface HistoryRecord {
-  id: number;         
-  date: string;       
-  duration: string;   
-  distance: string;   
-  events: number;     
-  status: string;     
+  id: number;
+  date: string;
+  duration: string;
+  distance: string;
+  events: number;
+  status: string;
 }
 
 interface HistorySummary {
@@ -32,9 +32,9 @@ const MOCK_RECORD: HistoryRecord = {
   id: 999999, // 가짜 ID
   date: "2025-11-26 17:32",
   duration: "26분",
-  distance: "0km", 
+  distance: "0km",
   events: 3,
-  status: "안전", 
+  status: "안전",
 };
 
 // --- 유틸 ---
@@ -50,7 +50,7 @@ export default function RecordScreen() {
 
   const [filter, setFilter] = useState<"recent" | "time">("recent");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
-  
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isPickerVisible, setPickerVisible] = useState(false);
 
@@ -86,7 +86,7 @@ export default function RecordScreen() {
       params.append("sortDir", sortDir);
       params.append("page", pageToFetch.toString());
       params.append("size", PAGE_SIZE.toString());
-      
+
       if (selectedDate) {
         params.append("date", toLocalYmd(selectedDate));
       }
@@ -108,8 +108,8 @@ export default function RecordScreen() {
       const json = await res.json();
 
       if (json.success) {
-        const newRecords = json.data.records; 
-        const newSummary = json.data.summary; 
+        const newRecords = json.data.records;
+        const newSummary = json.data.summary;
 
         setSummary(newSummary);
 
@@ -179,8 +179,8 @@ export default function RecordScreen() {
           item.status === "주의"
             ? { color: "orange" }
             : item.status.includes("안전")
-            ? { color: "green" }
-            : { color: "#E53E3E" },
+              ? { color: "green" }
+              : { color: "#E53E3E" },
         ]}
       >
         {item.status}
@@ -264,9 +264,9 @@ export default function RecordScreen() {
             ) : null
           }
           ListFooterComponent={
-            loading ? <ActivityIndicator style={{ padding: 20 }} /> : <View style={{height: 80}}/>
+            loading ? <ActivityIndicator style={{ padding: 20 }} /> : <View style={{ height: 80 }} />
           }
-          contentContainerStyle={{ paddingBottom: 20 }} 
+          contentContainerStyle={{ paddingBottom: 20 }}
         />
 
         <DateTimePickerModal
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  summaryItem: { alignItems: 'center', flex: 1 }, 
+  summaryItem: { alignItems: 'center', flex: 1 },
   summaryValue: { fontSize: 18, fontWeight: "bold" },
   summaryLabel: { fontSize: 12, color: "#666", marginTop: 2 },
 
