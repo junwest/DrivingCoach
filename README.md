@@ -394,7 +394,7 @@ docker-compose up --build
 ## 🏆 프로젝트 성과
 
 - ✅ AI 기반 실시간 운전 분석
-- ✅ 11가지 위험 운전 시나리오 자동 감지
+- ✅ 11가지 위험 운전 시나리오 자동 감지 (11개중 7개만 최종 선택)
 - ✅ 풀스택 모바일 애플리케이션
 - ✅ Docker를 통한 원클릭 배포
 - ✅ 완벽한 문서화
@@ -407,7 +407,7 @@ docker-compose up --build
 
 | 이름 | 담당 역할 | 주요 기여 분야 |
 |:---:|:---:|:---|
-| **본인 (PM)** | **Total Lead & MLOps** | 아키텍처 설계, MLOps/Infra, AI 모델링, Web 개발, UI/UX |
+| **본인 (junwest)** | **MLOps/AI** | 아키텍처 설계, MLOps/Infra, AI 모델링, Web 개발, UI/UX |
 | **cksdid202** | **Backend Dev** | Spring Boot API, WebSocket 로직, DB 설계 |
 | **janghosung01** | **Mobile App Dev** | React Native App 구현, 디바이스 센서/카메라 연동 |
 
