@@ -6,26 +6,6 @@
 
 ---
 
-## 👨‍💻 프로젝트 구성 및 기여
-
-### 핵심 기여 사항 (MLOps 중심)
-
-**🤖 AI 모델 개발 및 서비스화**
-- YOLO, Lane Detection, AudioCNN 모델 학습 및 최적화
-- FastAPI 기반 AI 추론 서버 구축 (`model/`)
-- Docker를 활용한 AI 모델 컨테이너화
-
-**🚀 MLOps & 배포 인프라**
-- Docker Compose를 통한 멀티 컨테이너 오케스트레이션
-- Railway 클라우드 백엔드 배포 (HTTPS)
-- ngrok을 활용한 로컬-클라우드 하이브리드 아키텍처
-- 환경별 설정 관리 (`config.js`, 환경변수)
-
-**⚙️ 시스템 통합**
-- 프론트엔드-백엔드-AI서버 3-tier 아키텍처 구성
-- WebSocket 실시간 통신 설정
-- CORS, Mixed-Content 등 웹 보안 이슈 해결
-
 **📦 프로젝트 구조**
 ```
 DrivingCoach/
@@ -419,7 +399,55 @@ docker-compose up --build
 - ✅ Docker를 통한 원클릭 배포
 - ✅ 완벽한 문서화
 
+---
 
+## 프로젝트 기여
+🚗 DrivingCoach 프로젝트 기여 및 역할 분담 보고서 (Final Version)
+1. 총괄 및 MLOps/AI 리드 (본인)
+핵심 역할: 프로젝트 총괄(PM), 시스템 아키텍처 설계, MLOps 파이프라인 구축, AI 모델 개발, Web 플랫폼 전담 개발, UI/UX 디자인
+
+🎨 UI/UX 디자인 (Generative AI 활용)
+개발 착수 전, 생성형 AI를 활용하여 사용자 중심의 디자인 시스템을 구축하고 개발 시간을 단축했습니다.
+
+Readdy AI 기반 프로토타이핑: Readdy AI 플랫폼을 적극 활용하여 사용자 경험(UX) 중심의 인터페이스를 직접 기획하고, 고품질의 디자인 프로토타입을 신속하게 제작하여 전체 개발 효율성을 극대화함.
+
+🚀 MLOps 및 클라우드 인프라 (Core Contribution)
+단순한 배포를 넘어, 서비스의 안정성과 확장성을 보장하는 엔터프라이즈급 인프라 아키텍처를 설계하고 구축했습니다.
+
+하이브리드 네트워크 터널링 구축: 로컬 개발 환경의 한계를 극복하기 위해 ngrok을 활용한 하이브리드 네트워크를 구성하고, 외부 접근을 위한 리버스 프록시 및 보안 터널링을 최적화함.
+
+컨테이너 오케스트레이션: Docker 및 Docker Compose를 기반으로 AI(FastAPI), Backend(Spring Boot), Frontend 컨테이너 간의 의존성을 관리하고, 'One-Click' 배포 환경을 구현함.
+
+Low-Latency 아키텍처 설계: 실시간 위험 감지를 위해 Client ↔ Backend ↔ AI Server 간 통신 경로를 최적화함. Docker 내부 네트워크(Internal Network)를 활용하여 추론 레이턴시를 최소화하고, 외부 접속 시 WSS(Secure WebSocket) 프로토콜을 적용하여 보안성을 확보함.
+
+💻 웹(Web) 애플리케이션 개발 (단독 수행)
+Web 클라이언트 개발: React Native Web 기술을 도입하여 기존 모바일 중심 코드를 웹 환경으로 포팅하고, 브라우저 환경에 맞는 UI/UX 최적화를 수행하여 웹 버전을 단독으로 개발함.
+
+CI/CD 및 Vercel 배포: Vercel을 이용한 서버리스 배포 파이프라인을 구축하고, 환경 변수 자동화 관리를 통해 개발(Dev)과 운영(Prod) 환경을 분리하여 운영함.
+
+🛠 시스템 통합 및 문제 해결 (Troubleshooting)
+Mixed-Content 및 보안 이슈 해결: HTTPS 환경에서 HTTP 백엔드 호출 시 발생하는 차단 문제를 해결하기 위해, 5개 핵심 컴포넌트(Login, Signup, Home, MyPage, Record)의 하드코딩된 URL을 Railway HTTPS URL로 전면 리팩토링함.
+
+환경 설정 자동화: config.js를 통해 실행 환경(Local/EC2/Railway)을 자동 감지하여 API 엔드포인트를 동적으로 스위칭하는 시스템을 구축함.
+
+🤖 AI 모델링 및 서빙
+멀티 모달 AI 개발: 주행 영상 분석용 YOLO(객체), Lane Detection(차선) 모델과 소리 분석용 AudioCNN 모델을 직접 학습 및 개발함.
+
+비동기 추론 서버: FastAPI 기반의 비동기 AI 서버를 구축하여 복수 모델의 병렬 추론 시스템을 구현함.
+
+2. 백엔드 개발 (cksdid202)
+핵심 역할: 서버 비즈니스 로직 구현, REST API 설계, WebSocket 메시징 처리
+
+RESTful API 구현: Spring Boot를 사용하여 회원가입, 주행 기록 저장/조회 등 서비스의 핵심 비즈니스 로직 API를 구현함.
+
+WebSocket 핸들러 구현: 구축된 인프라 위에서 클라이언트와 서버 간의 실시간 데이터를 중계하는 WebSocket Handler 및 세션 관리 로직을 개발함.
+
+3. 모바일 앱 개발 (janghosung01)
+핵심 역할: 모바일 클라이언트(Android/iOS) 구현, 디바이스 기능 연동
+
+모바일 앱(App) 구현: React Native를 사용하여 안드로이드 및 iOS 환경에서 동작하는 네이티브 앱 클라이언트를 전담 개발함.
+
+디바이스 제어: 모바일 기기의 카메라 및 센서 제어 기능을 구현하고, 백엔드 API와 연동하여 실제 주행 환경에서의 앱 사용성을 확보함.
 ---
 
 ## 📄 라이선스
