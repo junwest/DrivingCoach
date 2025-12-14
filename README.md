@@ -6,6 +6,38 @@
 
 ---
 
+## 👨‍💻 프로젝트 구성 및 기여
+
+### 핵심 기여 사항 (MLOps 중심)
+
+**🤖 AI 모델 개발 및 서비스화**
+- YOLO, Lane Detection, AudioCNN 모델 학습 및 최적화
+- FastAPI 기반 AI 추론 서버 구축 (`model/`)
+- Docker를 활용한 AI 모델 컨테이너화
+
+**🚀 MLOps & 배포 인프라**
+- Docker Compose를 통한 멀티 컨테이너 오케스트레이션
+- Railway 클라우드 백엔드 배포 (HTTPS)
+- ngrok을 활용한 로컬-클라우드 하이브리드 아키텍처
+- 환경별 설정 관리 (`config.js`, 환경변수)
+
+**⚙️ 시스템 통합**
+- 프론트엔드-백엔드-AI서버 3-tier 아키텍처 구성
+- WebSocket 실시간 통신 설정
+- CORS, Mixed-Content 등 웹 보안 이슈 해결
+
+**📦 프로젝트 구조**
+```
+DrivingCoach/
+├── model/          # AI 모델 서버 (본인 개발)
+│   ├── models/     # YOLO, Lane, Audio 모델
+│   └── src/        # FastAPI 서버 코드
+├── dev/            # Spring Boot 백엔드
+├── front/          # React Native 앱
+└── docker-compose.yml  # 통합 배포 설정
+```
+
+
 ## 🌐 라이브 데모 사이트
 
 **✨ 지금 바로 체험해보세요!**
