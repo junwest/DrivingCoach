@@ -1,6 +1,6 @@
 # 🚗 DrivingCoach - AI 운전 코칭 시스템
 
-> **졸업 과제 프로젝트** | AI로 운전 습관을 분석하고 피드백을 제공하는 시스템
+> **파이썬기반딥러닝** | AI로 운전 습관을 분석하고 피드백을 제공하는 시스템
 
 [![GitHub](https://img.shields.io/badge/GitHub-DrivingCoach-blue)](https://github.com/junwest/DrivingCoach)
 
@@ -86,6 +86,7 @@ DrivingCoach/
 **✨ 지금 바로 체험해보세요!**
 
 - **데모 URL**: https://c5666e306007.ngrok-free.app
+- **데모 URL**: https://driving-coach.vercel.app/
 - **로그인 정보**:
   - 아이디: `1234`
   - 비밀번호: `12345678`
@@ -165,13 +166,12 @@ cd DrivingCoach폴더경로  # 폴더를 터미널에 드래그하면 경로가 
 | 무엇을 볼까요? | 주소 | 설명 |
 |---|---|---|
 | 🌐 **앱 화면 (로컬)** | http://localhost:8081 | 실제 애플리케이션 (웹 버전) |
-| 🚀 **앱 화면 (배포)** | [Vercel 배포 가이드](DEPLOYMENT.md) | 인터넷 URL로 접근 가능 |
+| 🚀 **앱 화면 (배포)** | https://driving-coach.vercel.app/ | 인터넷 URL로 접근 가능 |
 | 📚 AI API 문서 | http://localhost:5001/docs | AI 분석 기능 테스트 |
 | 📊 백엔드 API | http://localhost:8080/swagger-ui/index.html | 서버 API 테스트 |
 
 > **처음이신가요?** 먼저 http://localhost:8081 로 접속해서 앱을 확인해보세요!
-> 
-> **외부에서 접속하려면?** [Vercel 배포 가이드](DEPLOYMENT.md)를 참고하세요.
+
 
 ---
 
@@ -457,7 +457,7 @@ docker-compose up --build
 ## 🏆 프로젝트 성과
 
 - ✅ AI 기반 실시간 운전 분석
-- ✅ 11가지 위험 운전 시나리오 자동 감지
+- ✅ 11가지 위험 운전 시나리오 자동 감지 (11개중 7개만 최종 선택)
 - ✅ 풀스택 모바일 애플리케이션
 - ✅ Docker를 통한 원클릭 배포
 - ✅ 완벽한 문서화
