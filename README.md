@@ -391,7 +391,7 @@ docker-compose up --build
 
 ## 👨‍💻 프로젝트 기여 및 역할 분담
 
-### 👑 1. MLOps/AI
+### 1. MLOps/AI(junwest)
 
 **핵심 역할:** System Architecture, MLOps Pipeline, AI Modeling, Web Dev, UI/UX Design
 
@@ -418,7 +418,7 @@ docker-compose up --build
 
 ---
 
-### 🖥️ 2. 백엔드 개발 및 운전(cksdid202)
+### 2. 백엔드 개발 및 운전(cksdid202)
 
 **핵심 역할:** 서버 비즈니스 로직 구현, REST API 설계, WebSocket 메시징 처리
 
@@ -427,7 +427,7 @@ docker-compose up --build
 
 ---
 
-### 📱 3. 모바일 앱 개발 및 보행자 역할(janghosung01)
+### 3. 모바일 앱 개발 및 보행자 역할(janghosung01)
 
 **핵심 역할:** 모바일 클라이언트(Android/iOS) 구현, 디바이스 기능 연동
 
