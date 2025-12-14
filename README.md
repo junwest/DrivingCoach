@@ -1,238 +1,276 @@
-# 🚗 DrivingCoach - AI 기반 운전 코칭 시스템
+# 🚗 DrivingCoach - AI 운전 코칭 시스템
 
-> 졸업과제 프로젝트: AI를 활용한 실시간 운전 습관 분석 및 피드백 시스템
+> **졸업 과제 프로젝트** | AI로 운전 습관을 분석하고 피드백을 제공하는 시스템
 
-## 📋 프로젝트 소개
+[![GitHub](https://img.shields.io/badge/GitHub-DrivingCoach-blue)](https://github.com/junwest/DrivingCoach)
 
-**DrivingCoach**는 차량 블랙박스 영상과 음성을 실시간으로 분석하여 위험 운전 행동을 감지하고, 운전자에게 즉각적인 피드백을 제공하는 시스템입니다.
-
-### 주요 기능
-- 🎥 **영상 분석**: YOLO 기반 객체 인식 (보행자, 차량, 횡단보도 표지판)
-- 🛣️ **차선 인식**: 딥러닝 기반 차선 변경 감지
-- 🔊 **음성 분석**: CNN 기반 특수 소리 감지 (경적, 깜박이, 와이퍼)
-- ⚠️ **위험 운전 감지**: 11가지 운전 시나리오 자동 판별
-- 📱 **모바일 앱**: React Native 기반 실시간 운행 기록 및 피드백
-
-## 🏗️ 시스템 아키텍처
-
-```
-DrivingCoach/
-├── model/          # AI 모델 및 분석 엔진
-├── dev/            # Spring Boot 백엔드 서버
-└── front/          # React Native 모바일 앱
-```
-
-## 🚀 빠른 시작 가이드
-
-### 🐳 가장 쉬운 방법: Docker (권장)
-
-**비전공자도 5분 안에 실행!**
-
-1. [Docker Desktop](https://www.docker.com/products/docker-desktop) 설치
-2. 프로젝트 다운로드
-3. **Windows**: `run_all.bat` 더블클릭 | **Mac**: `./run_all.sh` 실행
-
-그게 전부입니다! ✨
-
-상세 가이드: [**DOCKER_GUIDE.md**](DOCKER_GUIDE.md)
+**👀 5분 안에 실행 가능!** 프로그래밍 경험이 없어도 괜찮습니다.
 
 ---
 
-### 📚 수동 설치 (고급 사용자)
+## 📺 바로 보기
 
-#### 1️⃣ AI 모델 실행
+아래 3단계만 따라하면 프로젝트를 바로 실행할 수 있습니다!
+
+### ⚡ 빠른 시작 (3단계)
+
+#### 1단계: Docker Desktop 설치 (5분 소요)
+
+**Docker가 뭔가요?** 
+- 프로그램을 자동으로 실행해주는 도구입니다
+- Java, Python 등을 하나하나 설치할 필요가 없습니다
+
+**설치 방법:**
+1. https://www.docker.com/products/docker-desktop 접속
+2. 본인 컴퓨터에 맞는 버전 다운로드
+   - Windows: "Download for Windows" 클릭
+   - Mac (M1/M2): "Download for Mac with Apple silicon" 클릭
+   - Mac (Intel): "Download for Mac with Intel chip" 클릭
+3. 다운로드된 파일 실행하고 설치
+4. **Docker Desktop 앱을 실행** (아주 중요!)
+   - 맥: 런치패드 → Docker 아이콘
+   - 윈도우: 시작 메뉴 → Docker Desktop
+
+✅ Docker Desktop 앱이 열리면 준비 완료!
+
+---
+
+#### 2단계: 프로젝트 다운로드 (1분 소요)
+
+**방법 A: ZIP 다운로드 (추천 - 더 쉬움)**
+1. 이 페이지 위쪽 초록색 "Code" 버튼 클릭
+2. "Download ZIP" 클릭
+3. 다운로드된 ZIP 파일 압축 해제
+4. 압축 푼 폴더 열기
+
+**방법 B: Git 사용 (Git이 설치되어 있다면)**
 ```bash
-cd model
-pip install -r requirements.txt
-python src/main.py --videos Data/이벤트\ 4.mp4
+git clone https://github.com/junwest/DrivingCoach.git
+cd DrivingCoach
 ```
-상세 가이드: [model/README.md](model/README.md)
 
-#### 2️⃣ 백엔드 서버 실행
+---
+
+#### 3단계: 실행하기 (30초 소요)
+
+압축 푼 폴더에서:
+
+**Windows 사용자:**
+1. `run_all.bat` 파일 찾기
+2. **더블 클릭** (그게 전부입니다!)
+
+**Mac 사용자:**
+1. 터미널 열기 (Cmd + Space → "터미널" 검색)
+2. 다음 명령어 입력:
 ```bash
-cd dev
-./gradlew bootRun
+cd DrivingCoach폴더경로  # 폴더를 터미널에 드래그하면 경로가 자동입력됩니다
+./run_all.sh
 ```
-서버 주소: http://localhost:8080  
-상세 가이드: [dev/README.md](dev/README.md)
 
-#### 3️⃣ 프론트엔드 앱 실행
+---
+
+### 🎉 실행 완료!
+
+서버가 시작되면 브라우저를 열고 이 주소들로 접속하세요:
+
+| 무엇을 볼까요? | 주소 | 설명 |
+|---|---|---|
+| 🌐 **앱 화면** | http://localhost:8081 | 실제 애플리케이션 (웹 버전) |
+| 📚 AI API 문서 | http://localhost:5001/docs | AI 분석 기능 테스트 |
+| 📊 백엔드 API | http://localhost:8080/swagger-ui/index.html | 서버 API 테스트 |
+
+> **처음이신가요?** 먼저 http://localhost:8081 로 접속해서 앱을 확인해보세요!
+
+---
+
+## 🤔 문제가 생겼나요?
+
+### "Docker가 실행되지 않습니다"
+→ Docker Desktop 앱이 실행 중인지 확인하세요 (상단 메뉴바나 시스템 트레이에 고래 아이콘이 보여야 함)
+
+### "포트가 이미 사용 중입니다"
+→ 터미널에서 실행:
+```bash
+docker-compose down
+```
+그리고 다시 `run_all.bat` 또는 `run_all.sh` 실행
+
+### "주소에 접속이 안 돼요"
+→ 서버가 시작되는 데 1-2분 정도 걸릴 수 있습니다. 조금 기다린 후 새로고침하세요.
+
+### 그래도 안 되나요?
+→ GitHub Issues에 질문을 남겨주세요: https://github.com/junwest/DrivingCoach/issues
+
+---
+
+## 📱 모바일 앱도 실행하고 싶다면?
+
+### 준비물
+- 스마트폰
+- Expo Go 앱 설치
+  - [iOS App Store](https://apps.apple.com/app/expo-go/id982107779)
+  - [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent)
+
+### 실행 방법
+1. 터미널에서:
 ```bash
 cd front
 npm install
 npm start
 ```
-상세 가이드: [front/README.md](front/README.md)
 
-## 🎯 감지 가능한 운전 시나리오
+2. QR 코드가 나타나면 Expo Go 앱으로 스캔
 
-| ID | 시나리오 | 설명 |
-|---|---|---|
-| 4 | 차선 변경 후 방향지시등 미해제 | 차선 변경 완료 후 깜박이를 끄지 않음 |
-| 5 | 방향지시등 없이 차선 변경 | 깜박이 없이 차선을 변경 |
-| 7 | 악천후 전조등 미점등 | 와이퍼+비상등 감지 시 전조등 권장 |
-| 8 | 우회전 보행자 구간 경적 | 보행자 없는데 경적 사용 |
-| 9 | 보행자 근처 경적 | 보행자 위협 운전 |
-| 10 | 급정거 중 경적 | 위협 운전 |
-| 11 | 비상등 남용 | 비 오는 날 비상등 과다 사용 |
+---
 
-## 📁 프로젝트 구조
+## 🎯 프로젝트 소개
+
+### 이게 무엇인가요?
+
+DrivingCoach는 **AI를 이용해 운전 습관을 분석**하는 시스템입니다.
+
+**주요 기능:**
+- 🎥 블랙박스 영상 분석 (YOLO AI 사용)
+- 🛣️ 차선 변경 감지 (딥러닝)
+- 🔊 소리 분석 (경적, 깜박이, 와이퍼)
+- ⚠️ 위험 운전 자동 감지 (11가지 시나리오)
+- 📱 모바일 앱으로 기록 확인
+
+### 어떤 위험 운전을 감지하나요?
+
+| 번호 | 감지 내용 |
+|---|---|
+| 4 | 차선 변경 후 깜박이를 끄지 않음 |
+| 5 | 깜박이 없이 차선 변경 |
+| 7 | 비 오는데 전조등 미점등 |
+| 8 | 우회전 시 불필요한 경적 |
+| 9 | 보행자 근처에서 경적 |
+| 10 | 급정거 중 경적 (위협 운전) |
+| 11 | 비상등 남용 |
+
+---
+
+## 💻 기술 스택 (참고용)
+
+궁금하신 분들을 위해:
+
+- **AI/ML**: PyTorch, YOLO, U-Net, CNN
+- **백엔드**: Spring Boot, FastAPI
+- **프론트엔드**: React Native (Expo)
+- **데이터베이스**: MySQL / H2
+- **배포**: Docker, Docker Compose
+
+---
+
+## 📂 프로젝트 구조
 
 ```
 DrivingCoach/
-├── model/                      # AI 모델 및 분석 엔진
-│   ├── src/                   # 분석 파이프라인
-│   │   ├── main.py           # 메인 실행 파일
-│   │   ├── AudioCNN.py       # 음성 분석 모델
-│   │   ├── lane_detect.py    # 차선 인식 모델
-│   │   └── yolo.py           # 객체 인식
-│   ├── models/               # 학습된 모델 가중치 (.pt 파일)
-│   └── Data/                 # 입력 비디오
+├── 🐳 run_all.bat        # Windows에서 더블클릭하면 실행
+├── 🐳 run_all.sh          # Mac/Linux 실행 스크립트
+├── 📖 README.md           # 이 파일
+├── 📖 DOCKER_GUIDE.md     # Docker 상세 가이드
 │
-├── dev/                       # Spring Boot 백엔드
-│   ├── src/main/java/        # Java 소스 코드
-│   ├── src/main/resources/   # 설정 파일
-│   │   ├── application.yml
-│   │   ├── application-dev.yml
-│   │   └── application-prod.yml
-│   └── build.gradle          # 의존성 관리
-│
-├── front/                     # React Native 앱
-│   ├── screens/              # 화면 컴포넌트
-│   ├── navigation/           # 네비게이션 설정
-│   ├── Driving/              # 운전 기록 기능
-│   └── package.json          # npm 의존성
-│
-└── .gitignore                # Git 제외 파일 설정
+├── dev/                   # 백엔드 (Spring Boot)
+├── model/                 # AI 서버 (FastAPI)
+└── front/                 # 모바일/웹 앱 (React Native)
 ```
 
-## 🔧 개발 환경 설정
+---
 
-### AI 모델 개발
+## 🔧 서버 제어 명령어
+
+### 서버 중지
 ```bash
-# Python 가상환경 생성
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# 의존성 설치
-cd model
-pip install torch torchvision ultralytics librosa opencv-python numpy
+docker-compose down
 ```
 
-### 백엔드 개발
+### 서버 재시작
 ```bash
-# Gradle 빌드
-cd dev
-./gradlew build
-
-# 테스트 실행
-./gradlew test
+docker-compose restart
 ```
 
-### 프론트엔드 개발
+### 로그 확인
 ```bash
-# Expo 개발 서버
-cd front
-npm install
-npm start
-
-# iOS 시뮬레이터
-npm run ios
-
-# Android 에뮬레이터
-npm run android
+docker-compose logs -f
 ```
 
-## 📚 API 문서
+### 완전히 처음부터 다시
+```bash
+docker-compose down -v
+docker-compose up --build
+```
 
-백엔드 서버 실행 후 Swagger UI에서 확인:
-- **로컬**: http://localhost:8080/swagger-ui/index.html
-- **API Docs**: http://localhost:8080/v3/api-docs
+---
 
-## 🛠️ 기술 스택
+## 📚 더 자세한 가이드
 
-### AI/ML
-- **PyTorch**: 딥러닝 프레임워크
-- **YOLO (Ultralytics)**: 객체 인식
-- **U-Net**: 차선 세그멘테이션
-- **CNN**: 음성 분류
+각 폴더별로 상세한 README가 있습니다:
 
-### 백엔드
-- **Spring Boot 3.3.3**: REST API 서버
-- **Spring Security**: 인증/인가
-- **JWT**: 토큰 기반 인증
-- **MySQL / H2**: 데이터베이스
-- **AWS S3**: 파일 저장소
+- [Docker 상세 가이드](DOCKER_GUIDE.md) - Docker 사용법
+- [백엔드 가이드](dev/README.md) - Spring Boot 서버
+- [AI 서버 가이드](model/README.md) - FastAPI 서버
+- [프론트엔드 가이드](front/README.md) - React Native 앱
+- [AI 모델 설치 가이드](model/SETUP_GUIDE.md) - 수동 설치 방법
 
-### 프론트엔드
-- **React Native**: 크로스 플랫폼 앱
-- **Expo**: 개발 프레임워크
-- **React Navigation**: 화면 네비게이션
-- **Socket.IO**: 실시간 통신
+---
 
 ## 🎓 교수님/평가자를 위한 가이드
 
-### 1. 데모 영상 확인
-`model/Outputs/` 폴더에서 분석 결과 영상 확인 가능
+### 빠른 데모 확인
+1. Docker Desktop 실행
+2. `run_all.bat` (Windows) 또는 `./run_all.sh` (Mac) 실행
+3. http://localhost:8081 접속 → 앱 확인
+4. http://localhost:5001/docs 접속 → AI API 테스트
 
-### 2. 로컬 실행 (권장)
-각 폴더의 README.md 참고하여 순차 실행:
-1. AI 모델 테스트 → `model/README.md`
-2. 백엔드 서버 실행 → `dev/README.md`
-3. 모바일 앱 실행 → `front/README.md`
+### 예상 소요 시간
+- Docker 설치: 5분
+- 첫 실행 (이미지 빌드): 5-10분
+- 이후 실행: 30초
 
-### 3. 설정 파일
-- 백엔드: `dev/src/main/resources/application.yml`
-- 프론트엔드 환경변수: GitHub 저장소 설명 참고
+### 시스템 요구사항
+- **OS**: Windows 10+, macOS 10.15+, Linux
+- **메모리**: 최소 4GB RAM (권장 8GB)
+- **디스크**: 약 5GB 여유 공간
+- **Docker Desktop**: 최신 버전
 
-## ⚠️ 문제 해결
+---
 
-### AI 모델 실행 오류
-```bash
-# CUDA 사용 불가 시
-python src/main.py --device cpu
+## 🏆 프로젝트 성과
 
-# 모델 파일 없음
-# → models/ 폴더에 .pt 파일 확인 필요
-```
-
-### 백엔드 실행 오류
-```bash
-# Java 버전 확인
-java -version  # Java 17 이상 필요
-
-# 포트 충돌 시
-# application.yml에서 server.port 변경
-```
-
-### 프론트엔드 실행 오류
-```bash
-# node_modules 재설치
-rm -rf node_modules package-lock.json
-npm install
-
-# Expo 캐시 삭제
-expo start -c
-```
-
-## 📊 프로젝트 성과
-
+- ✅ AI 기반 실시간 운전 분석
 - ✅ 11가지 위험 운전 시나리오 자동 감지
-- ✅ 실시간 영상/음성 분석 파이프라인 구축
-- ✅ 풀스택 모바일 앱 개발
-- ✅ RESTful API 설계 및 구현
-- ✅ 딥러닝 모델 통합 (YOLO, U-Net, CNN)
+- ✅ 풀스택 모바일 애플리케이션
+- ✅ Docker를 통한 원클릭 배포
+- ✅ 완벽한 문서화
 
-## 👥 팀 정보
+---
 
-- **프로젝트명**: DrivingCoach
-- **기간**: 2024년 졸업과제
-- **저장소**: https://github.com/junwest/DrivingCoach
+## 👥 개발팀
 
-## 📝 라이선스
+**DrivingCoach Team**
+- GitHub: https://github.com/junwest/DrivingCoach
+
+---
+
+## 📄 라이선스
 
 이 프로젝트는 교육 목적으로 제작되었습니다.
 
 ---
 
-**📧 문의사항이 있으시면 GitHub Issues를 이용해주세요!**
+## 💬 질문이 있으신가요?
+
+- 🐛 버그 제보: [GitHub Issues](https://github.com/junwest/DrivingCoach/issues)
+- 💡 기능 제안: [GitHub Issues](https://github.com/junwest/DrivingCoach/issues)
+- 📧 문의: GitHub Issues를 이용해주세요
+
+---
+
+<div align="center">
+
+**⭐ 이 프로젝트가 도움이 되셨다면 Star를 눌러주세요! ⭐**
+
+Made with ❤️ by DrivingCoach Team
+
+</div>
