@@ -2,7 +2,7 @@
 # -------------------------------------------------------------
 # 1) Builder 단계: Gradle로 JAR 빌드
 # -------------------------------------------------------------
-FROM eclipse-temurin:17-jdk-alpine AS builder
+FROM eclipse-temurin:17-jdk AS builder
 WORKDIR /workspace
 
 # (1) Gradle 래퍼와 설정 복사
@@ -20,12 +20,12 @@ RUN ./gradlew bootJar --no-daemon
 # -------------------------------------------------------------
 # 2) Runtime 단계: 최소 이미지에 JAR만 복사해 실행
 # -------------------------------------------------------------
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jdk
 LABEL authors="lcy21"
 WORKDIR /app
 
 # (추가!) FFmpeg 설치
-RUN apk update && apk add --no-cache ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
 
 # (4) 빌드된 JAR만 복사
 COPY --from=builder /workspace/build/libs/*.jar app.jar

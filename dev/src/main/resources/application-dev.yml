@@ -10,9 +10,6 @@ spring:
   application:
     name: driving-coach-backend
 
-  profiles:
-    active: local   # ??? local. CI/????? prod ? ?????
-
   # -------- JSON/?? ??(??) --------
   jackson:
     serialization:

@@ -16,12 +16,12 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code
-COPY src/ ./src/
+# Copy source code to /app root (not /app/src)
+COPY src/*.py ./
 COPY models/ ./models/
 
 # Expose port
 EXPOSE 5000
 
-# Run FastAPI server
-CMD ["python", "-m", "uvicorn", "src.server:app", "--host", "0.0.0.0", "--port", "5000"]
+# Run FastAPI server (server.py is now in /app)
+CMD ["python", "-m", "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "5000"]

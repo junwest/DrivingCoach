@@ -1,4 +1,4 @@
-version: '3.8'
+name: drivingcoach
 
 services:
   # Spring Boot Backend
@@ -23,7 +23,7 @@ services:
     build: ./model
     container_name: drivingcoach-ai
     ports:
-      - "5000:5000"
+      - "5001:5000" # 외부 5001, 내부 5000
     networks:
       - drivingcoach-network
     healthcheck:
