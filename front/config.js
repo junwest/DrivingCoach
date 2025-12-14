@@ -13,15 +13,13 @@
 const ENV_BACKEND = typeof process !== 'undefined' && process.env?.REACT_APP_BACKEND_URL;
 const ENV_AI_SERVER = typeof process !== 'undefined' && process.env?.REACT_APP_AI_SERVER_URL;
 
-// ⚠️ Vercel 배포용: ngrok URL 직접 입력 (노트북 실행 중일 때만 작동)
-const API_HOST = 'https://df68d74f529e.ngrok-free.app';
+// EC2 백엔드 서버 (항상 켜져있음)
+const API_HOST = 'http://15.165.244.204:8080';
 
-// 로컬 개발 시 localhost로 변경하려면 위 줄을 주석처리하고 아래를 활성화:
+// 로컬 테스트용 (필요시 주석 해제)
 // const API_HOST = 'localhost';
 
-// 같은 Wi-Fi 네트워크 (실제 기기 테스트용)
-// 본인 컴퓨터의 IP 주소로 변경하세요
-// const API_HOST = '192.168.0.100';  // 👈 여기를 본인 IP로 변경!
+
 
 
 // ========================================
