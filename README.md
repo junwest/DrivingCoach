@@ -1,8 +1,21 @@
 # 🚗 DrivingCoach - AI 운전 코칭 시스템
 
-> **파이썬기반딥러닝_기말대체과제** | AI로 운전 습관을 분석하고 피드백을 제공하는 시스템
+> **졸업 과제 프로젝트** | AI로 운전 습관을 분석하고 피드백을 제공하는 시스템
 
 [![GitHub](https://img.shields.io/badge/GitHub-DrivingCoach-blue)](https://github.com/junwest/DrivingCoach)
+
+---
+
+## 🌐 라이브 데모 사이트
+
+**✨ 지금 바로 체험해보세요!**
+
+- **데모 URL**: https://c5666e306007.ngrok-free.app
+- **로그인 정보**:
+  - 아이디: `1234`
+  - 비밀번호: `12345678`
+
+> **⚠️ 중요**: 이 데모 사이트는 개발자의 노트북이 켜져있을 때만 작동합니다.
 
 ---
 
