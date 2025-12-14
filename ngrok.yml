@@ -1,0 +1,11 @@
+version: "2"
+authtoken: YOUR_NGROK_AUTH_TOKEN  # ngrok.com에서 가입 후 받은 토큰으로 교체
+tunnels:
+  backend:
+    proto: http
+    addr: 8080
+    inspect: false
+  ai-server:
+    proto: http
+    addr: 5001
+    inspect: false

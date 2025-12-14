@@ -9,6 +9,10 @@
 // 여기만 수정하세요! ✏️
 // ========================================
 
+// 환경 변수 우선 (Vercel 배포용)
+const ENV_BACKEND = typeof process !== 'undefined' && process.env?.REACT_APP_BACKEND_URL;
+const ENV_AI_SERVER = typeof process !== 'undefined' && process.env?.REACT_APP_AI_SERVER_URL;
+
 // 로컬 개발 (같은 컴퓨터)
 const API_HOST = 'localhost';
 
@@ -31,22 +35,24 @@ const AI_SERVER_PORT = 5001;  // Docker에서 실제 사용하는 포트
 const isNgrok = API_HOST.includes('ngrok.io');
 const protocol = isNgrok ? '' : 'http://';
 
-// 전체 URL 구성
+// 전체 URL 구성 (환경 변수 우선)
 export const API_CONFIG = {
     // 백엔드 API
-    BACKEND_URL: isNgrok
+    BACKEND_URL: ENV_BACKEND || (isNgrok
         ? `${API_HOST}/api`
-        : `${protocol}${API_HOST}:${BACKEND_PORT}/api`,
+        : `${protocol}${API_HOST}:${BACKEND_PORT}/api`),
 
     // AI 서버 API
-    AI_SERVER_URL: isNgrok
+    AI_SERVER_URL: ENV_AI_SERVER || (isNgrok
         ? API_HOST  // ngrok은 한 URL에 모두 포함
-        : `${protocol}${API_HOST}:${AI_SERVER_PORT}`,
+        : `${protocol}${API_HOST}:${AI_SERVER_PORT}`),
 
     // WebSocket (실시간 통신)
-    WEBSOCKET_URL: isNgrok
-        ? API_HOST.replace('https', 'wss')
-        : `ws://${API_HOST}:${BACKEND_PORT}/ws`
+    WEBSOCKET_URL: ENV_BACKEND
+        ? ENV_BACKEND.replace('http', 'ws').replace('/api', '/ws')
+        : (isNgrok
+            ? API_HOST.replace('https', 'wss')
+            : `ws://${API_HOST}:${BACKEND_PORT}/ws`)
 };
 
 // 디버그: 현재 설정 출력
