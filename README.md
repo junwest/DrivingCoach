@@ -73,11 +73,14 @@ cd DrivingCoach폴더경로  # 폴더를 터미널에 드래그하면 경로가 
 
 | 무엇을 볼까요? | 주소 | 설명 |
 |---|---|---|
-| 🌐 **앱 화면** | http://localhost:8081 | 실제 애플리케이션 (웹 버전) |
+| 🌐 **앱 화면 (로컬)** | http://localhost:8081 | 실제 애플리케이션 (웹 버전) |
+| 🚀 **앱 화면 (배포)** | [Vercel 배포 가이드](DEPLOYMENT.md) | 인터넷 URL로 접근 가능 |
 | 📚 AI API 문서 | http://localhost:5001/docs | AI 분석 기능 테스트 |
 | 📊 백엔드 API | http://localhost:8080/swagger-ui/index.html | 서버 API 테스트 |
 
 > **처음이신가요?** 먼저 http://localhost:8081 로 접속해서 앱을 확인해보세요!
+> 
+> **외부에서 접속하려면?** [Vercel 배포 가이드](DEPLOYMENT.md)를 참고하세요.
 
 ---
 
