@@ -32,27 +32,26 @@ const API_HOST = 'https://df68d74f529e.ngrok-free.app';
 const BACKEND_PORT = 8080;
 const AI_SERVER_PORT = 5001;  // Docker에서 실제 사용하는 포트
 
-// 프로토콜 자동 설정
-const isNgrok = API_HOST.includes('ngrok.io');
-const protocol = isNgrok ? '' : 'http://';
+// ngrok URL 체크 (https:// 또는 http://로 시작하면 ngrok)
+const isNgrok = API_HOST.startsWith('http://') || API_HOST.startsWith('https://');
 
 // 전체 URL 구성 (환경 변수 우선)
 export const API_CONFIG = {
     // 백엔드 API
     BACKEND_URL: ENV_BACKEND || (isNgrok
-        ? `${API_HOST}/api`
-        : `${protocol}${API_HOST}:${BACKEND_PORT}/api`),
+        ? `${API_HOST}/api`  // ngrok은 이미 프로토콜 포함
+        : `http://${API_HOST}:${BACKEND_PORT}/api`),
 
     // AI 서버 API
     AI_SERVER_URL: ENV_AI_SERVER || (isNgrok
-        ? API_HOST  // ngrok은 한 URL에 모두 포함
-        : `${protocol}${API_HOST}:${AI_SERVER_PORT}`),
+        ? API_HOST  // ngrok은 이미 프로토콜 포함
+        : `http://${API_HOST}:${AI_SERVER_PORT}`),
 
     // WebSocket (실시간 통신)
     WEBSOCKET_URL: ENV_BACKEND
         ? ENV_BACKEND.replace('http', 'ws').replace('/api', '/ws')
         : (isNgrok
-            ? API_HOST.replace('https', 'wss')
+            ? `${API_HOST.replace('https', 'wss').replace('http', 'ws')}/ws`
             : `ws://${API_HOST}:${BACKEND_PORT}/ws`)
 };
 
