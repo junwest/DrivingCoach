@@ -150,6 +150,132 @@ DrivingCoach는 **AI를 이용해 운전 습관을 분석**하는 시스템입�
 
 ---
 
+## 🏗️ 시스템 아키텍처
+
+### 전체 구조
+
+```mermaid
+graph TB
+    subgraph "클라이언트"
+        Mobile["📱 모바일 앱<br/>(React Native + Expo)"]
+        Web["🌐 웹 앱<br/>(React Native Web)"]
+    end
+    
+    subgraph "백엔드 서버<br/>(포트 8080)"
+        API["🔧 REST API<br/>(Spring Boot)"]
+        WS["🔌 WebSocket<br/>(실시간 통신)"]
+        DB[("💾 데이터베이스<br/>(H2/MySQL)")]
+    end
+    
+    subgraph "AI 분석 서버<br/>(포트 5001)"
+        FastAPI["⚡ FastAPI<br/>(비동기)"]
+        YOLO["🎯 YOLO<br/>(객체 감지)"]
+        UNet["🛣️ U-Net<br/>(차선 감지)"]
+        AudioCNN["🔊 AudioCNN<br/>(소리 분석)"]
+    end
+    
+    subgraph "저장소"
+        S3["☁️ AWS S3<br/>(영상 저장)"]
+    end
+    
+    Mobile --> API
+    Web --> API
+    Mobile -.WebSocket.-> WS
+    Web -.WebSocket.-> WS
+    
+    API --> DB
+    WS --> DB
+    WS -- "영상 업로드" --> S3
+    WS -- "AI 분석 요청" --> FastAPI
+    
+    FastAPI --> YOLO
+    FastAPI --> UNet
+    FastAPI --> AudioCNN
+    FastAPI -- "분석 결과" --> WS
+    
+    style Mobile fill:#e1f5ff
+    style Web fill:#e1f5ff
+    style API fill:#fff3e0
+    style WS fill:#fff3e0
+    style FastAPI fill:#f3e5f5
+    style S3 fill:#e8f5e9
+```
+
+### 데이터 흐름
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 사용자
+    participant M as 📱 모바일/웹
+    participant B as 🔧 백엔드
+    participant A as 🤖 AI 서버
+    participant S as ☁️ S3
+    
+    U->>M: 주행 시작
+    M->>B: WebSocket 연결
+    B-->>M: 연결 확인 + RecordID
+    
+    loop 2초마다
+        M->>M: 영상 녹화 (2초)
+        M->>B: 영상 전송 (WS)
+        B->>S: 영상 저장
+        B->>A: AI 분석 요청
+        A->>A: YOLO + Lane + Audio 분석
+        A-->>B: 분석 결과
+        B-->>M: 실시간 피드백 (TTS)
+    end
+    
+    U->>M: 주행 종료
+    M->>B: 종료 신호
+    B->>B: 데이터 저장
+    B-->>M: 완료 확인
+```
+
+### 배포 아키텍처
+
+```mermaid
+graph LR
+    subgraph "Docker Compose"
+        subgraph "Backend Container"
+            SB[Spring Boot<br/>:8080]
+        end
+        
+        subgraph "AI Container"
+            FA[FastAPI<br/>:5001]
+        end
+        
+        SB <--> FA
+    end
+    
+    User[👤 사용자] --> SB
+    User --> FA
+    
+    subgraph "로컬 개발"
+        FE[React Native<br/>:8081<br/>npm run web]
+    end
+    
+    FE --> SB
+    FE --> FA
+    
+    style SB fill:#ff9800
+    style FA fill:#9c27b0
+    style FE fill:#2196f3
+```
+
+### 기술 스택 상세
+
+| 계층 | 기술 | 역할 |
+|---|---|---|
+| **프론트엔드** | React Native + Expo | 크로스 플랫폼 모바일/웹 앱 |
+| **백엔드** | Spring Boot 3.3 + JWT | RESTful API, 인증, WebSocket |
+| **AI 서버** | FastAPI + Uvicorn | 비동기 AI 모델 서빙 |
+| **AI 모델** | YOLO v8, U-Net, CNN | 객체/차선/소리 분석 |
+| **데이터베이스** | H2 (개발), MySQL (프로덕션) | 사용자 및 주행 기록 |
+| **스토리지** | AWS S3 | 영상 파일 저장 |
+| **배포** | Docker + Docker Compose | 컨테이너 오케스트레이션 |
+
+---
+
 ## 💻 기술 스택 (참고용)
 
 궁금하신 분들을 위해:

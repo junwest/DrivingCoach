@@ -10,11 +10,11 @@
 // ========================================
 
 // 로컬 개발 (같은 컴퓨터)
-// const API_HOST = 'localhost';
+const API_HOST = 'localhost';
 
-// 같은 Wi-Fi 네트워크 (실제 기기 테스트)
+// 같은 Wi-Fi 네트워크 (실제 기기 테스트용)
 // 본인 컴퓨터의 IP 주소로 변경하세요
-const API_HOST = '192.168.0.100';  // 👈 여기를 본인 IP로 변경!
+// const API_HOST = '192.168.0.100';  // 👈 여기를 본인 IP로 변경!
 
 // ngrok 사용 시 (외부 접근)
 // const API_HOST = 'https://abc123.ngrok.io'  // ngrok URL로 변경
@@ -25,7 +25,7 @@ const API_HOST = '192.168.0.100';  // 👈 여기를 본인 IP로 변경!
 
 // 포트 설정
 const BACKEND_PORT = 8080;
-const AI_SERVER_PORT = 5000;
+const AI_SERVER_PORT = 5001;  // Docker에서 실제 사용하는 포트
 
 // 프로토콜 자동 설정
 const isNgrok = API_HOST.includes('ngrok.io');

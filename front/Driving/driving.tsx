@@ -11,8 +11,11 @@ import { fileUriToArrayBuffer, zipSingleFileIfAvailable } from "../utils/wsHelpe
 // ★ 화면 회전 제어 라이브러리
 import * as ScreenOrientation from 'expo-screen-orientation';
 
-const HOST = "15.165.244.204:8080"; // 백엔드 주소
-const API_URL = `http://${HOST}`;
+import { API_CONFIG } from "../config";
+
+// 백엔드 주소 (config.js에서 자동 설정)
+const API_URL = API_CONFIG.BACKEND_URL.replace('/api', '');
+const HOST = API_URL.replace('http://', '');  // WebSocket용
 
 export default function Driving() {
   const navigation = useNavigation<any>();
@@ -22,7 +25,7 @@ export default function Driving() {
   const [jwt, setJwt] = useState<string | null>(null);
   const [recording, setRecording] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
-  
+
   // 백엔드에서 받은 recordId 저장
   const currentRecordIdRef = useRef<number | null>(null);
 
@@ -33,7 +36,7 @@ export default function Driving() {
   const [cameraReady, setCameraReady] = useState(false);
 
   const [stopping, setStopping] = useState(false);
-  const [statusMessage, setStatusMessage] = useState(""); 
+  const [statusMessage, setStatusMessage] = useState("");
 
   // ----------------------------------------------------------------
   // ★ [수정] 화면 가로 모드(반대 방향) 고정 & 탭바 숨기기
@@ -61,7 +64,7 @@ export default function Driving() {
         try {
           // 1. 세로 모드로 복귀
           await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-          
+
           // 2. 탭바 다시 보이기
           navigation.getParent()?.setOptions({
             tabBarStyle: undefined // 기본값으로 복원 (보임)
@@ -76,15 +79,32 @@ export default function Driving() {
   // ----------------------------------------------------------------
 
 
-  // 1. 토큰 로드
+  // 1. 토큰 로드 (웹 지원)
   useEffect(() => {
     (async () => {
-      const token = await AsyncStorage.getItem("accessToken");
-      if (!token) {
-        Alert.alert("로그인 필요", "다시 로그인해주세요.");
-        return;
+      try {
+        // 웹 환경 체크
+        const isWeb = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+
+        let token: string | null = null;
+        if (isWeb) {
+          // 웹: localStorage 사용
+          token = window.localStorage.getItem("accessToken");
+        } else {
+          // 모바일: AsyncStorage 사용
+          token = await AsyncStorage.getItem("accessToken");
+        }
+
+        if (!token) {
+          Alert.alert("로그인 필요", "다시 로그인해주세요.");
+          return;
+        }
+        setJwt(token);
+        console.log("[Auth] 토큰 로드 완료:", token.substring(0, 20) + "...");
+      } catch (error) {
+        console.error("[Auth] 토큰 로드 실패:", error);
+        Alert.alert("오류", "토큰을 불러올 수 없습니다.");
       }
-      setJwt(token);
     })();
   }, []);
 
@@ -95,7 +115,7 @@ export default function Driving() {
       setCamPerm(cs === "granted");
       const { status: ms } = await Camera.requestMicrophonePermissionsAsync();
       setAudPerm(ms === "granted");
-      
+
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
@@ -135,7 +155,7 @@ export default function Driving() {
         // (2) AI 음성 피드백 처리 (TTS)
         if (msg.type === 'FEEDBACK_VOICE' && msg.message) {
           console.log("🔊 [TTS] 음성 안내:", msg.message);
-          
+
           Speech.stop(); // 기존 음성 중단
 
           Speech.speak(msg.message, {
@@ -162,7 +182,7 @@ export default function Driving() {
   const recordOneSegment = () =>
     new Promise<string>((resolve, reject) => {
       if (!cameraRef.current) return reject(new Error("camera not ready"));
-      
+
       cameraRef.current
         .recordAsync({ maxDuration: 2 })
         .then((video) => {
@@ -181,44 +201,44 @@ export default function Driving() {
   const finishDrivingSequence = async () => {
     console.log("[Finish] 주행 종료 요청");
     setStatusMessage("주행 기록 저장 중...");
-    
+
     try {
       if (currentRecordIdRef.current) {
         // 백엔드에 종료 요청
         const response = await fetch(`${API_URL}/api/driving/end`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${jwt}`
-            },
-            body: JSON.stringify({
-                recordId: currentRecordIdRef.current,
-                endTime: new Date().toISOString(),
-                finalScore: 100, // (예시) 점수
-                finalVideoKeyOrUrl: null // 백엔드가 직접 병합하도록 null 전송
-            })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwt}`
+          },
+          body: JSON.stringify({
+            recordId: currentRecordIdRef.current,
+            endTime: new Date().toISOString(),
+            finalScore: 100, // (예시) 점수
+            finalVideoKeyOrUrl: null // 백엔드가 직접 병합하도록 null 전송
+          })
         });
-        
+
         if (response.ok) {
-            console.log("[API] 주행 종료 성공");
+          console.log("[API] 주행 종료 성공");
         } else {
-            console.error("[API] 주행 종료 실패", await response.text());
+          console.error("[API] 주행 종료 실패", await response.text());
         }
       }
 
     } catch (e) {
       console.error("[Finish] 종료 에러:", e);
     } finally {
-        setStopping(false);
+      setStopping(false);
 
-        // 네비게이션 리셋 로직
-        navigation.getParent()?.navigate("기록실");
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'DrivingScreen' }], 
-          })
-        );
+      // 네비게이션 리셋 로직
+      navigation.getParent()?.navigate("기록실");
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'DrivingScreen' }],
+        })
+      );
     }
   };
 
@@ -226,48 +246,76 @@ export default function Driving() {
   // --- 녹화 시작 ---
   const startRecording = async () => {
     if (recording) return;
-    if (!camPerm || !audPerm) return Alert.alert("권한 필요", "권한 허용 필요");
-    if (!cameraReady || !cameraRef.current) return Alert.alert("카메라 준비 중", "잠시만요");
+
+    // 웹 환경 체크
+    const isWeb = typeof window !== 'undefined' && typeof window.navigator !== 'undefined';
+
+    // 웹이 아닌 경우에만 권한/카메라 체크
+    if (!isWeb) {
+      if (!camPerm || !audPerm) return Alert.alert("권한 필요", "권한 허용 필요");
+      if (!cameraReady || !cameraRef.current) return Alert.alert("카메라 준비 중", "잠시만요");
+    }
+
     if (!jwt) return Alert.alert("오류", "토큰 없음");
 
     currentRecordIdRef.current = null;
     setStopping(false);
 
     try {
+      console.log(`[Driving] ${isWeb ? '🌐 웹 시뮬레이션' : '📱 모바일 실제'} 모드로 시작`);
+
+      // TTS: 웹과 모바일 모두 지원
       Speech.speak("안전 운전을 시작합니다.", { language: "ko-KR" });
 
       // 웹소켓 연결
       const url = `ws://${HOST}/ws/driving?token=${encodeURIComponent(`Bearer ${jwt}`)}`;
       await connect(url);
       await onceOpen();
-      sendJson({ type: "START" }); 
+      sendJson({ type: "START" });
 
       setRecording(true);
       setElapsedTime(0);
       drivingLoopRef.current = true;
 
-      // 녹화 루프
-      let nextPromise: Promise<string> | null = null;
-      
-      while (drivingLoopRef.current) {
-        // (A) 녹화
-        const uri = nextPromise ? await nextPromise : await recordOneSegment();
-        
-        if (drivingLoopRef.current) {
-             nextPromise = recordOneSegment();
-        } else {
-             nextPromise = null;
-        }
+      if (isWeb) {
+        // ===== 웹: 시뮬레이션 모드 (타이머만 작동) =====
+        console.log("[Web] 시뮬레이션 모드: 실제 녹화 없이 타이머만 작동");
 
-        // (B) 실시간 전송
-        const path = await zipSingleFileIfAvailable(uri);
-        const buf = await fileUriToArrayBuffer(path);
-        sendBinary(buf);
+        // 2초마다 더미 데이터 전송 (백엔드 연결 유지)
+        while (drivingLoopRef.current) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
+          if (drivingLoopRef.current) {
+            // 더미 바이너리 데이터 전송
+            const dummyData = new Uint8Array([0, 1, 2, 3, 4, 5]);
+            sendBinary(dummyData.buffer);
+            console.log("[Web] 더미 데이터 전송 (시뮬레이션)");
+          }
+        }
+      } else {
+        // ===== 모바일: 실제 카메라 녹화 =====
+        let nextPromise: Promise<string> | null = null;
+
+        while (drivingLoopRef.current) {
+          // (A) 녹화
+          const uri = nextPromise ? await nextPromise : await recordOneSegment();
+
+          if (drivingLoopRef.current) {
+            nextPromise = recordOneSegment();
+          } else {
+            nextPromise = null;
+          }
+
+          // (B) 실시간 전송
+          const path = await zipSingleFileIfAvailable(uri);
+          const buf = await fileUriToArrayBuffer(path);
+          sendBinary(buf);
+        }
       }
 
     } catch (e) {
       console.warn("startRecording error:", e);
-      Alert.alert("오류", "녹화 시작 실패");
+      Alert.alert("오류", isWeb ? "시뮬레이션 시작 실패" : "녹화 시작 실패");
       setRecording(false);
     }
   };
@@ -276,20 +324,20 @@ export default function Driving() {
   const stopRecording = async () => {
     console.log("[Driving] 종료 버튼 클릭");
     if (!recording) return;
-    
+
     Speech.stop();
     setStopping(true);
-    
-    drivingLoopRef.current = false; 
-    
-    try { cameraRef.current?.stopRecording(); } catch {}
+
+    drivingLoopRef.current = false;
+
+    try { cameraRef.current?.stopRecording(); } catch { }
     setRecording(false);
 
     // 웹소켓 END 전송
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-        sendJson({ type: "END" });
+      sendJson({ type: "END" });
     }
-    close(); 
+    close();
 
     // 종료 API 호출
     await finishDrivingSequence();
