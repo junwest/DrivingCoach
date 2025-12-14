@@ -1,3 +1,30 @@
+#!/usr/bin/env python3
+"""
+차선 탐지 및 이탈 분석 파이프라인
+
+Google Colab 예시
+-----------------
+1) 런타임 준비
+    %pip install --upgrade torch torchvision opencv-python pillow tqdm
+    # (Colab 저장소 사용 시) from google.colab import drive; drive.mount('/content/drive')
+
+2) 차선 마스크 생성
+    !python src/algorithm_lane.py \
+        --image-dir /content/drive/MyDrive/dataset/images \
+        --mask-dir /content/drive/MyDrive/dataset/masks \
+        --model-path /content/drive/MyDrive/models/lane_detect.pth
+
+3) 영상 차선 이탈 분석
+    !python src/algorithm_lane.py \
+        --video-path /content/drive/MyDrive/videos/driving.mp4 \
+        --video-output /content/drive/MyDrive/results/overlay.mp4 \
+        --model-path /content/drive/MyDrive/models/lane_detect.pth
+
+4) 검증 및 분석 역시 동일한 스크립트에서 실행할 수 있습니다.
+"""
+
+from __future__ import annotations
+
 import argparse
 import csv
 import glob
@@ -22,7 +49,7 @@ for p in {PROJECT_ROOT, SRC_DIR}:
     if str(p) not in sys.path:
         sys.path.append(str(p))
 
-from colab_model import UNet  # 기존 lane_model 대체
+from colab_model import UNet  # 기존 lane_model 대체 코랩 환경에서 학습하였음
 from find_diff import DepartureRatioSample, DepartureWindowStats, summarize_departure_samples
 
 

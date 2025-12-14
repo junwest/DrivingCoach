@@ -10,13 +10,13 @@ Google Colab 예시
 
 2) 학습
     !python src/yolo.py train \
-        --data /content/drive/MyDrive/Capstone/dataset.yaml \
-        --project /content/drive/MyDrive/Capstone/YOLO_RESULTS \
+        --data /content/drive/MyDrive/dataset.yaml \
+        --project /content/drive/MyDrive/YOLO_RESULTS \
         --name Final_Training_Run
 
 3) TensorRT 변환
     !python src/yolo.py export-engine \
-        --weights /content/drive/MyDrive/Capstone/YOLO_RESULTS/Final_Training_Run/weights/best.pt
+        --weights /content/drive/MyDrive/YOLO_RESULTS/Final_Training_Run/weights/best.pt
 
 4) 벤치마크 / 검증 / 추론 역시 동일한 스크립트에서 실행할 수 있습니다.
 """
