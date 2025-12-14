@@ -6,35 +6,79 @@
 
 ---
 
-## 👨‍💻 프로젝트 구성 및 기여
+## 👨‍💻 프로젝트 기여도 및 역할
 
-### 핵심 기여 사항 (MLOps 중심)
+> [!IMPORTANT]
+> **총괄 및 MLOps/AI 리드** - 시스템 아키텍처 설계부터 배포 자동화까지 전 과정 주도
 
-**🤖 AI 모델 개발 및 서비스화**
-- YOLO, Lane Detection, AudioCNN 모델 학습 및 최적화
-- FastAPI 기반 AI 추론 서버 구축 (`model/`)
-- Docker를 활용한 AI 모델 컨테이너화
+### 🎯 핵심 기여 영역
 
-**🚀 MLOps & 배포 인프라**
-- Docker Compose를 통한 멀티 컨테이너 오케스트레이션
-- Railway 클라우드 백엔드 배포 (HTTPS)
-- ngrok을 활용한 로컬-클라우드 하이브리드 아키텍처
-- 환경별 설정 관리 (`config.js`, 환경변수)
+<table>
+<tr>
+<td width="50%">
 
-**⚙️ 시스템 통합**
-- 프론트엔드-백엔드-AI서버 3-tier 아키텍처 구성
-- WebSocket 실시간 통신 설정
-- CORS, Mixed-Content 등 웹 보안 이슈 해결
+#### 🤖 **AI 모델 개발**
+- ✅ YOLO 객체 탐지 모델 학습
+- ✅ Lane Detection 차선 인식
+- ✅ AudioCNN 주행음 분석
+- ✅ FastAPI 멀티모달 추론 서버
 
-**📦 프로젝트 구조**
+</td>
+<td width="50%">
+
+#### 🚀 **MLOps & 인프라**
+- ✅ Docker Compose 오케스트레이션
+- ✅ Railway 클라우드 배포
+- ✅ ngrok 하이브리드 아키텍처
+- ✅ CI/CD 파이프라인 구축
+
+</td>
+</tr>
+<tr>
+<td>
+
+#### ⚙️ **시스템 통합**
+- ✅ 3-tier 아키텍처 설계
+- ✅ WebSocket 실시간 통신
+- ✅ CORS/Mixed-Content 해결
+- ✅ 환경별 설정 자동화
+
+</td>
+<td>
+
+#### 💻 **웹 플랫폼 개발**
+- ✅ React Native Web 포팅
+- ✅ Vercel 서버리스 배포
+- ✅ 반응형 UI/UX 구현
+- ✅ 브라우저 호환성 최적화
+
+</td>
+</tr>
+</table>
+
+### 📊 기술 스택 개요
+
+```mermaid
+graph LR
+    A[React Native Web] -->|REST API| B[Spring Boot]
+    A -->|WebSocket| B
+    B -->|Internal Network| C[FastAPI AI Server]
+    C -->|YOLO + Lane + Audio| D[AI Models]
+    B -->|Railway Cloud| E[PostgreSQL]
+    A -->|Vercel| F[CDN]
+```
+
+### 📦 프로젝트 구조
+
 ```
 DrivingCoach/
-├── model/          # AI 모델 서버 (본인 개발)
-│   ├── models/     # YOLO, Lane, Audio 모델
-│   └── src/        # FastAPI 서버 코드
-├── dev/            # Spring Boot 백엔드
-├── front/          # React Native 앱
-└── docker-compose.yml  # 통합 배포 설정
+├── 🧠 model/              # AI 서버 (FastAPI) - 본인 개발
+│   ├── models/            # YOLO, Lane, AudioCNN
+│   ├── src/               # 추론 서버 로직
+│   └── Dockerfile         # AI 서버 컨테이너화
+├── 🔧 dev/                # 백엔드 (Spring Boot)
+├── 📱 front/              # 프론트엔드 (React Native)
+└── 🐳 docker-compose.yml  # 멀티 컨테이너 오케스트레이션
 ```
 
 
